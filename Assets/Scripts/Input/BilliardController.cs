@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 public class BilliardController : PhysicsMaterialManager
 {
     [Header("Power Settings")]
-    [SerializeField] private float maxPower = 50f;
+    [SerializeField] private float maxPower = 300f;
     [SerializeField] private float chargeSpeed = 15f;
 
     [Header("Components")]

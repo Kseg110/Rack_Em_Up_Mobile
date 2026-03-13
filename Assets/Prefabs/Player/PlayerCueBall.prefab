@@ -142,7 +142,7 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 1
+  m_UseGravity: 0
   m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 4
@@ -271,8 +271,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BilliardController
   ballPhysicsMaterial: {fileID: 0}
   wallPhysicsMaterial: {fileID: 0}
-  maxPower: 20
-  chargeSpeed: 10
+  maxPower: 50
+  chargeSpeed: 15
   billiardBall: {fileID: 1617351716242497224}
   aimingSystem:
     groundLayer:
@@ -334,8 +334,16 @@ MonoBehaviour:
   stopVelocityThreshold: 0.1
   spinStrength: 15
   topSpinEffect: 8
+  linearDamping: 0.95
+  angularDamping: 0.98
+  restitution: 0.8
+  ballRadius: 0.5
+  collisionMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
   debugCurrentSideSpin: 0
   debugCurrentSpin: {x: 0, y: 0}
+  debugCurrentVelocity: {x: 0, y: 0, z: 0}
   currentSideSpin: 1
 --- !u!1 &3688857442657307608
 GameObject:
