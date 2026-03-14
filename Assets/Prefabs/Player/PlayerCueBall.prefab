@@ -317,6 +317,8 @@ MonoBehaviour:
   _line: {fileID: 5536545535300245337}
   _maxPhysicsFrameIterations: 1
   _curvePreviewLine: {fileID: 0}
+  _billiardBall: {fileID: 0}
+  _curvePreviewSteps: 120
 --- !u!114 &1617351716242497224
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -329,7 +331,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fecd14030cfaa1a40834145c08b69e7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BilliardBall
-  curveStrength: 5
+  curveStrength: 10
   spinDecayRate: 2
   stopVelocityThreshold: 0.1
   spinStrength: 15
