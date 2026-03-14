@@ -9,41 +9,58 @@ public abstract class EnemyBallBase : MonoBehaviour
     [SerializeField] protected float stopVelocityThreshold = 0.1f;
     [SerializeField] protected float mass = 1f;
 
+    [Header("Ball Physics")]
+    [SerializeField] protected float restitution    = 0.8f;
+    [SerializeField] protected float linearDamping  = 0.97f;
+    [SerializeField] protected float angularDamping = 0.98f;
+    [SerializeField] protected float ballRadius     = 0.5f;
+    [SerializeField] protected LayerMask collisionMask = ~0;
+
     [Header("Curve (optional simple support)")]
     [SerializeField] protected float curvePullForce = 4f;
-    [SerializeField] protected float curveDuration = 0.6f;
+    [SerializeField] protected float curveDuration  = 0.6f;
 
     [Header("Tags")]
     [SerializeField] private string enemyTag = "Enemy";
 
     protected Rigidbody rb;
+    protected Vector3 currentVelocity = Vector3.zero;
     private bool wasMovingLastFixedUpdate;
 
     protected virtual void Awake()
     {
         rb = GetComponent<Rigidbody>();
 
-        // Apply configured rigidbody settings (uses existing helper)
         if (rigidbodyConfig != null)
-        {
             RigidbodyConfigurator.ConfigureRigidbody(rb, rigidbodyConfig);
-        }
 
-        // Apply mass
         rb.mass = mass;
+
+        // Make kinematic so we control movement manually, same as BilliardBall
+        rb.isKinematic = true;
+        rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+
+        var col = GetComponent<SphereCollider>();
+        if (col != null)
+            ballRadius = col.radius * Mathf.Max(transform.lossyScale.x, transform.lossyScale.y, transform.lossyScale.z);
     }
 
-    protected virtual void Start()
-    {
-        // placeholder for future derived classes
-    }
+    protected virtual void Start() { }
 
     protected virtual void FixedUpdate()
     {
-        // simple motion 
         bool isMoving = IsBallMoving();
 
-        // Derived classes can use this info via overridden FixedUpdate 
+        if (isMoving)
+        {
+            ApplyDamping();
+            MoveWithCollision();
+        }
+        else
+        {
+            ApplyDamping();
+        }
+
         wasMovingLastFixedUpdate = isMoving;
     }
 
@@ -62,14 +79,11 @@ public abstract class EnemyBallBase : MonoBehaviour
 
     public virtual bool IsBallMoving()
     {
-        bool isLinearLow = rb.linearVelocity.magnitude <= stopVelocityThreshold;
-        bool isAngularLow = rb.angularVelocity.magnitude <= stopVelocityThreshold;
-
-        bool isMoving = !(isLinearLow && isAngularLow);
+        bool isMoving = currentVelocity.magnitude > stopVelocityThreshold;
 
         if (!isMoving && wasMovingLastFixedUpdate)
         {
-            // fully stopped -> clear small residuals
+            currentVelocity = Vector3.zero;
             rb.linearVelocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
         }
@@ -77,77 +91,123 @@ public abstract class EnemyBallBase : MonoBehaviour
         return isMoving;
     }
 
-    // Add similar kinematic support
     public virtual void ApplyForce(Vector3 impulse)
     {
-        if (rb.isKinematic)
-        {
-            // Store and apply velocity manually (see pattern above)
-        }
-        else
-        {
-            rb.AddForce(impulse, ForceMode.Impulse);
-        }
-        //Debug.Log($"[EnemyBallBase] ApplyForce impulse={impulse}");
+        currentVelocity += impulse / mass;
     }
 
     public virtual void ApplyForceWithCurve(Vector3 baseImpulse, Vector3 lateralDirection, float lateralIntensity)
     {
-        rb.AddForce(baseImpulse, ForceMode.Impulse);
+        currentVelocity += baseImpulse / mass;
 
         if (lateralIntensity > 0.01f && lateralDirection != Vector3.zero)
         {
             StopAllCoroutines();
             StartCoroutine(ApplySimpleCurveCoroutine(lateralDirection.normalized, lateralIntensity));
         }
-
-        //Debug.Log($"[EnemyBallBase] ApplyForceWithCurve base={baseImpulse} lateralDir={lateralDirection} intensity={lateralIntensity}");
     }
+
+    // --- Movement & Collision ---
+
+    private void MoveWithCollision()
+    {
+        Vector3 moveStep     = currentVelocity * Time.fixedDeltaTime;
+        float   moveDistance = moveStep.magnitude;
+
+        if (moveDistance < 0.0001f) return;
+
+        bool hit = Physics.SphereCast(
+            rb.position,
+            ballRadius * 0.99f,
+            moveStep.normalized,
+            out RaycastHit hitInfo,
+            moveDistance + ballRadius * 0.1f,
+            collisionMask,
+            QueryTriggerInteraction.Ignore);
+
+        if (hit)
+            HandleSweepCollision(hitInfo);
+        else
+            rb.MovePosition(rb.position + moveStep);
+    }
+
+    private void HandleSweepCollision(RaycastHit hitInfo)
+    {
+        var otherEnemy = hitInfo.rigidbody?.GetComponent<EnemyBallBase>();
+        var playerBall = hitInfo.rigidbody?.GetComponent<BilliardBall>();
+
+        if (playerBall != null)
+        {
+            // Let the player ball's resolver handle this; just reflect
+            currentVelocity = Vector3.Reflect(currentVelocity, hitInfo.normal) * restitution;
+        }
+        else if (otherEnemy != null)
+        {
+            HandleEnemyToEnemyCollision(otherEnemy, hitInfo.normal);
+        }
+        else
+        {
+            HandleWallCollision(hitInfo.normal, hitInfo.point);
+        }
+    }
+
+    private void HandleWallCollision(Vector3 normal, Vector3 hitPoint)
+    {
+        currentVelocity = Vector3.Reflect(currentVelocity, normal) * restitution;
+        rb.MovePosition(hitPoint + normal * (ballRadius + 0.001f));
+
+        Debug.DrawRay(hitPoint, normal * 0.5f, Color.yellow, 0.2f);
+    }
+
+    private void HandleEnemyToEnemyCollision(EnemyBallBase other, Vector3 normal)
+    {
+        float mySpeed    = Vector3.Dot(currentVelocity, normal);
+        float otherSpeed = Vector3.Dot(other.currentVelocity, -normal);
+
+        if (mySpeed < 0f) return;
+
+        Vector3 myNormalVel    = normal * mySpeed;
+        Vector3 otherNormalVel = -normal * otherSpeed;
+
+        currentVelocity       = (currentVelocity       - myNormalVel    + otherNormalVel) * restitution;
+        other.currentVelocity = (other.currentVelocity - otherNormalVel + myNormalVel)    * restitution;
+
+        rb.MovePosition(rb.position - normal * (ballRadius * 0.1f));
+    }
+
+    private void ApplyDamping()
+    {
+        float factor = Mathf.Pow(linearDamping, Time.fixedDeltaTime * 60f);
+        currentVelocity *= factor;
+
+        if (currentVelocity.magnitude < stopVelocityThreshold)
+            currentVelocity = Vector3.zero;
+    }
+
+    // --- Curve coroutine ---
 
     private IEnumerator ApplySimpleCurveCoroutine(Vector3 lateralDir, float intensity)
     {
         float elapsed = 0f;
-        float currentIntensity = intensity;
 
-        while (elapsed < curveDuration && rb.linearVelocity.magnitude > stopVelocityThreshold)
+        while (elapsed < curveDuration && currentVelocity.magnitude > stopVelocityThreshold)
         {
-            // linear falloff of intensity
-            float t = 1f - (elapsed / curveDuration);
-            Vector3 lateralForce = lateralDir * (currentIntensity * curvePullForce * t) * Time.fixedDeltaTime;
-            rb.AddForce(lateralForce, ForceMode.Force);
+            float t            = 1f - (elapsed / curveDuration);
+            Vector3 lateralForce = lateralDir * (intensity * curvePullForce * t) * Time.fixedDeltaTime;
+            currentVelocity   += lateralForce / mass;
 
-            // debug
             Debug.DrawRay(rb.position, lateralForce * 10f, Color.magenta, 0.1f);
 
             elapsed += Time.fixedDeltaTime;
             yield return new WaitForFixedUpdate();
         }
     }
-    protected virtual void OnCollisionEnter(Collision collision)
-    {
-        if (collision.rigidbody == null) return;
-
-        var playerBall = collision.rigidbody.GetComponent<BilliardBall>();
-        if (playerBall != null)
-        {
-            //OnHitByPlayerBall(playerBall, collision);
-        }
-    }
 
     protected virtual void OnTriggerEnter(Collider other)
     {
-        // Only process if this object has the designated enemy tag
         if (!gameObject.CompareTag(enemyTag)) return;
 
-        // If the trigger is a pocket (either by component or by tag), destroy this enemy
         if (other.GetComponent<Pockets>() != null || other.CompareTag("Pocket"))
-        {
-            //Debug.Log($"[EnemyBallBase] Enemy '{name}' fell into pocket and will be destroyed.");
             Destroy(gameObject);
-        }
     }
-    //protected virtual void OnHitByPlayerBall(BilliardBall playerBall, Collision collision)
-    //{
-    //    Debug.Log($"[EnemyBallBase] Hit by player ball: {name}. Collision impulse approx: {collision.impulse.magnitude:F3}");
-    //}
 }
