@@ -79,7 +79,7 @@ public class Projection : PhysicsMaterialManager
             _curvePreviewLine = obj.AddComponent<LineRenderer>();
         }
 
-        _curvePreviewLine.positionCount = 80;
+        _curvePreviewLine.positionCount = 200;
         _curvePreviewLine.startWidth    = 0.03f;
         _curvePreviewLine.endWidth      = 0.03f;
         _curvePreviewLine.material      = new Material(Shader.Find("Sprites/Default"));
@@ -251,7 +251,9 @@ public class Projection : PhysicsMaterialManager
             simSpin = Vector2.MoveTowards(simSpin, Vector2.zero, spinDecayRate * dt);
             simPos += simVelocity * dt;
 
-            if (step >= pointIndex * sampleInterval)
+            // Use float comparison to get evenly distributed sample points
+            float nextSampleStep = (pointIndex) * sampleInterval;
+            if (step >= nextSampleStep)
             {
                 pointIndex++;
                 if (pointIndex < pointCount)
