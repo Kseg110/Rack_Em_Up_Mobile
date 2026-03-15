@@ -31,6 +31,14 @@ public class BilliardBall : MonoBehaviour
     [SerializeField] private Vector2 debugCurrentSpin     = Vector2.zero;
     [SerializeField] private Vector3 debugCurrentVelocity = Vector3.zero;
 
+    [Header("Audio")]
+    [Tooltip("Sound to play when this ball collides")]
+    [SerializeField] private AudioClip collisionClip;
+    [Tooltip("Base volume for collision sound (0..1)")]
+    [SerializeField] [Range(0f, 1f)] private float collisionVolume = 1f;
+    [Tooltip("Divide speed by this value to compute scaled volume")]
+    [SerializeField] private float collisionSpeedScale = 8f;
+
     #endregion
 
     #region Public State
@@ -49,6 +57,8 @@ public class BilliardBall : MonoBehaviour
     private Rigidbody            rb;
     private BallCollisionResolver collisionResolver;
 
+    private AudioSource audioSource;
+
     #endregion
 
     #region Unity Lifecycle
@@ -64,6 +74,18 @@ public class BilliardBall : MonoBehaviour
             ballRadius = col.radius * Mathf.Max(transform.lossyScale.x, transform.lossyScale.y, transform.lossyScale.z);
 
         collisionResolver = new BallCollisionResolver(restitution, ballRadius);
+
+        // Setup AudioSource (minimal, created if missing)
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+            audioSource.playOnAwake = false;
+        }
+
+        // Try to route to GameManager SFX mixer group if available
+        if (GameManager.Instance != null && GameManager.Instance.sfxMixerGroup != null)
+            audioSource.outputAudioMixerGroup = GameManager.Instance.sfxMixerGroup;
     }
 
     private void FixedUpdate()
@@ -98,7 +120,7 @@ public class BilliardBall : MonoBehaviour
 
     #endregion
 
-    #region Public API — Force & Spin
+    #region Public API – Force & Spin
 
     public void Initialize(Rigidbody rigidbody)
     {
@@ -247,6 +269,9 @@ public class BilliardBall : MonoBehaviour
         currentSpin             = newSpin;
         currentSideSpin         = currentSpin.x;
         currentAngularVelocity  *= angularScale.x;
+
+        // Play collision sound (scale volume by speed)
+        PlayCollisionSound(currentVelocity.magnitude);
     }
 
     private void HandleBallToBallCollision(BilliardBall other, Vector3 normal)
@@ -255,12 +280,18 @@ public class BilliardBall : MonoBehaviour
             rb, other, currentVelocity, other.currentVelocity, normal,
             out Vector3 myNew, out Vector3 otherNew);
 
+        // compute approximate impact strength and play sound
+        float impactStrength = Mathf.Clamp01((currentVelocity.magnitude + other.currentVelocity.magnitude) / (collisionSpeedScale * 2f));
+        PlayCollisionSound(impactStrength);
+
         currentVelocity       = myNew;
         other.currentVelocity = otherNew;
     }
 
     private void HandleBallToEnemyCollision(EnemyBallBase enemy, Vector3 normal)
     {
+        // play sound based on speed
+        PlayCollisionSound(currentVelocity.magnitude / collisionSpeedScale);
         currentVelocity = collisionResolver.ResolveBallToEnemy(rb, enemy, currentVelocity, normal);
     }
 
@@ -333,6 +364,22 @@ public class BilliardBall : MonoBehaviour
             Quaternion delta = Quaternion.Euler(currentAngularVelocity * Mathf.Rad2Deg * Time.fixedDeltaTime);
             rb.MoveRotation(rb.rotation * delta);
         }
+    }
+
+    #endregion
+
+    #region Audio Helpers
+
+    private void PlayCollisionSound(float speedBasedValue)
+    {
+        if (collisionClip == null || audioSource == null) return;
+
+        // If speedBasedValue is a magnitude, normalize it; otherwise treat as already normalized 0..1
+        float normalized = Mathf.Abs(speedBasedValue);
+        if (normalized > 1f)
+            normalized = Mathf.Clamp01(normalized / collisionSpeedScale);
+
+        audioSource.PlayOneShot(collisionClip, Mathf.Clamp01(collisionVolume * normalized));
     }
 
     #endregion

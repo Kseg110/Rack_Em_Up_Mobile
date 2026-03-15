@@ -283,8 +283,6 @@ MonoBehaviour:
     minTouchDistance: 1
     enableTouchAiming: 1
     maxCurveIntensity: 3
-    curveInputSensitivity: 1
-    maxCurveAngle: 30
   rigidbodyConfig:
     useGravity: 0
     isKinematic: 0
@@ -318,7 +316,7 @@ MonoBehaviour:
   _maxPhysicsFrameIterations: 1
   _curvePreviewLine: {fileID: 0}
   _billiardBall: {fileID: 0}
-  _curvePreviewSteps: 120
+  _curvePreviewSteps: 20
 --- !u!114 &1617351716242497224
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -346,6 +344,9 @@ MonoBehaviour:
   debugCurrentSideSpin: 0
   debugCurrentSpin: {x: 0, y: 0}
   debugCurrentVelocity: {x: 0, y: 0, z: 0}
+  collisionClip: {fileID: 8300000, guid: 535165b46d201a7468859ee90e9efd12, type: 3}
+  collisionVolume: 1
+  collisionSpeedScale: 8
   currentSideSpin: 1
 --- !u!1 &3688857442657307608
 GameObject:
