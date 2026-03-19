@@ -451,7 +451,7 @@ MonoBehaviour:
   playButton: {fileID: 1640416950102408788}
   settingsButton: {fileID: 1640416950102408790}
   quitButton: {fileID: 1640416950102408789}
-  backButton: {fileID: 0}
+  backButton: {fileID: 98907418694742081}
   mainMenuPanel: {fileID: 1552534977}
   settingsPanel: {fileID: 15671970}
 --- !u!1 &1552534977 stripped
@@ -922,6 +922,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0cf91126f6922b341ae95b6e3e3e09e7, type: 3}
+--- !u!114 &98907418694742081 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7061187664182846482, guid: 0cf91126f6922b341ae95b6e3e3e09e7, type: 3}
+  m_PrefabInstance: {fileID: 98907418694742080}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
 --- !u!1001 &1640416950102408787
 PrefabInstance:
   m_ObjectHideFlags: 0
