@@ -127,12 +127,8 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2778571379415255671, guid: 87cb5c3d5211fa34f865cc3a8713ef53, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3436143837434321804, guid: 87cb5c3d5211fa34f865cc3a8713ef53, type: 3}
-      propertyPath: m_Enabled
+    - target: {fileID: 4529860213767756604, guid: 87cb5c3d5211fa34f865cc3a8713ef53, type: 3}
+      propertyPath: m_CullTransparentMesh
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5001493074743059084, guid: 87cb5c3d5211fa34f865cc3a8713ef53, type: 3}
@@ -140,7 +136,7 @@ PrefabInstance:
       value: EndScenePannel
       objectReference: {fileID: 0}
     - target: {fileID: 6191834997155981522, guid: 87cb5c3d5211fa34f865cc3a8713ef53, type: 3}
-      propertyPath: m_Enabled
+      propertyPath: m_SortingOrder
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6904006533836155910, guid: 87cb5c3d5211fa34f865cc3a8713ef53, type: 3}
@@ -517,7 +513,7 @@ GameObject:
   - component: {fileID: 219235811}
   - component: {fileID: 219235813}
   - component: {fileID: 219235814}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Rboarder
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -629,7 +625,7 @@ GameObject:
   m_Component:
   - component: {fileID: 377743667}
   - component: {fileID: 377743668}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Square
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -721,7 +717,7 @@ GameObject:
   - component: {fileID: 462516387}
   - component: {fileID: 462516389}
   - component: {fileID: 462516388}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Bboarder
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -1403,7 +1399,7 @@ GameObject:
   m_Component:
   - component: {fileID: 689185209}
   - component: {fileID: 689185210}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: RectangleTiledTableTop_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1494,7 +1490,7 @@ GameObject:
   m_Component:
   - component: {fileID: 738704803}
   - component: {fileID: 738704802}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Square
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1586,7 +1582,7 @@ GameObject:
   - component: {fileID: 778749444}
   - component: {fileID: 778749446}
   - component: {fileID: 778749445}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Tboarder
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -1764,7 +1760,7 @@ GameObject:
   - component: {fileID: 862483827}
   - component: {fileID: 862483829}
   - component: {fileID: 862483830}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Lboarder
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -1875,7 +1871,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 905818828}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: BG
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1895,9 +1891,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 689185209}
   - {fileID: 738704803}
   - {fileID: 377743667}
-  - {fileID: 689185209}
   - {fileID: 862483827}
   - {fileID: 219235811}
   - {fileID: 778749444}
@@ -2991,15 +2987,15 @@ SceneRoots:
   - {fileID: 519420032}
   - {fileID: 619394802}
   - {fileID: 1164584677554542309}
-  - {fileID: 1882348779}
   - {fileID: 191268363}
+  - {fileID: 1267732003}
   - {fileID: 564186415}
   - {fileID: 1791865750}
   - {fileID: 1139924191}
-  - {fileID: 1267732003}
   - {fileID: 801261105}
   - {fileID: 19549175}
   - {fileID: 1087313619}
   - {fileID: 1097236128962301506}
+  - {fileID: 1882348779}
   - {fileID: 586232113}
   - {fileID: 1467419801076998977}
