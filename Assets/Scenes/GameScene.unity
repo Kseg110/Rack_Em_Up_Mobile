@@ -1048,10 +1048,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 735765514}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -90.046}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -1098.8119, y: 378.0174}
-  m_SizeDelta: {x: 238.1491, y: 168.3589}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 71.18811, y: -161.9826}
+  m_SizeDelta: {x: 238.14911, y: 168.35889}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &360627732
 MonoBehaviour:
@@ -1398,6 +1398,7 @@ GameObject:
   - component: {fileID: 519420031}
   - component: {fileID: 519420029}
   - component: {fileID: 519420030}
+  - component: {fileID: 519420033}
   m_Layer: 0
   m_Name: MainCamera
   m_TagString: MainCamera
@@ -1523,6 +1524,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &519420033
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519420028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29f34ca1cb6e24b41a418adcae73376f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CameraFitter
+  targetBoardWidth: 21.742
+  targetBoardHeight: 10.049
 --- !u!1 &522466476
 GameObject:
   m_ObjectHideFlags: 0
@@ -2182,7 +2197,7 @@ GameObject:
   m_Component:
   - component: {fileID: 665830029}
   m_Layer: 0
-  m_Name: Lvl2
+  m_Name: Lvl2Scene
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2815,7 +2830,7 @@ GameObject:
   m_Component:
   - component: {fileID: 905818828}
   m_Layer: 0
-  m_Name: Lvl1
+  m_Name: Lvl1Scene
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
