@@ -127,6 +127,17 @@ public class BilliardBall : MonoBehaviour
         rb = rigidbody;
     }
 
+    /// <summary>Fully resets all velocity, spin, and angular state to zero.</summary>
+    public void ResetState()
+    {
+        currentVelocity        = Vector3.zero;
+        currentAngularVelocity = Vector3.zero;
+        currentSideSpin        = 0f;
+        currentSpin            = Vector2.zero;
+        wasMovingLastFrame     = false;
+        UpdateDebugValues();
+    }
+
     /// <summary>Fires the ball with a direction, power and optional side spin.</summary>
     public void Shoot(Vector3 direction, float power, float sideSpin = 0f)
     {

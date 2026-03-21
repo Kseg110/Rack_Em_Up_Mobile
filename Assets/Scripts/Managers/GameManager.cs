@@ -1,6 +1,7 @@
 // commented out save logic, will implement in future build to allow player to save and close the game and return to current run in the future.
 
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
@@ -25,11 +26,13 @@ public class GameManager : MonoBehaviour
     // Removed EndScenePanel and prefab fields. GameCanvasManager is now authoritative for end UI.
     #endregion
 
-    [Header("Win / Enemy Parent")]
-    [Tooltip("Optional: parent GameObject that contains all enemy entries in the Game scene (set in inspector).")]
-    public Transform enemiesParent;
-    [Tooltip("If enemiesParent is not set, this name will be searched for in the active scene.")]
-    public string enemiesParentName = "Enemies";
+    [Header("Win / Enemy Parents (ordered by level)")]
+    [Tooltip("Assign Lvl1Enemies, Lvl2Enemies, etc. in order. Each parent is activated when the previous level is cleared.")]
+    public List<Transform> enemyLevelParents = new List<Transform>();
+    [Tooltip("Fallback names to search for if enemyLevelParents list is empty (e.g. 'Lvl1Enemies', 'Lvl2Enemies').")]
+    public List<string> enemyLevelParentNames = new List<string> { "Lvl1Enemies", "Lvl2Enemies" };
+
+    private int _currentLevelIndex = 0;
 
     private AudioSource audioSource;
 
@@ -43,8 +46,8 @@ public class GameManager : MonoBehaviour
     public int maxLives = 7;
     private int _lives = 7;
     private int _shots = 10;
-    private protected int _maxShots = 10;
-    private protected int _rounds = 0;
+    private int _maxShots = 10;
+    private int _rounds = 0;
     private bool winCheck = false;
     #endregion
 
@@ -123,23 +126,49 @@ public class GameManager : MonoBehaviour
         {
             SpawnPlayer();
 
-            // Try to resolve enemiesParent automatically if not assigned
-            if (enemiesParent == null && !string.IsNullOrEmpty(enemiesParentName))
-            {
-                var found = GameObject.Find(enemiesParentName);
-                if (found != null)
-                    enemiesParent = found.transform;
-            }
+            // Resolve enemy level parents if not assigned in the inspector
+            ResolveLevelParents();
+
+            // Start from the first level
+            _currentLevelIndex = 0;
+            ActivateCurrentLevel();
 
             // Reset win flag for a new playthrough
             winCheck = false;
 
             // Ask GameCanvasManager to hide the end scene UI if present
-
             var canvasMgr = UnityEngine.Object.FindAnyObjectByType<GameCanvasManager>();
-
             if (canvasMgr != null)
                 canvasMgr.HideEndScene();
+        }
+    }
+
+    // Attempts to populate enemyLevelParents from enemyLevelParentNames if the list is empty.
+    private void ResolveLevelParents()
+    {
+        if (enemyLevelParents == null)
+            enemyLevelParents = new List<Transform>();
+
+        // Only auto-resolve if nothing was assigned in the inspector
+        if (enemyLevelParents.Count == 0 && enemyLevelParentNames != null)
+        {
+            foreach (var parentName in enemyLevelParentNames)
+            {
+                if (string.IsNullOrEmpty(parentName)) continue;
+                var found = GameObject.Find(parentName);
+                if (found != null)
+                    enemyLevelParents.Add(found.transform);
+            }
+        }
+    }
+
+    // Deactivates all level parents then activates only the current one.
+    private void ActivateCurrentLevel()
+    {
+        for (int i = 0; i < enemyLevelParents.Count; i++)
+        {
+            if (enemyLevelParents[i] != null)
+                enemyLevelParents[i].gameObject.SetActive(i == _currentLevelIndex);
         }
     }
 
@@ -319,7 +348,7 @@ public class GameManager : MonoBehaviour
         {
             _playerInstance.transform.position = position;
 
-            // Reset rigidbody
+            // Reset rigidbody (belt-and-suspenders for any non-kinematic forces)
             Rigidbody rb = _playerInstance.GetComponent<Rigidbody>();
             if (rb != null)
             {
@@ -327,13 +356,12 @@ public class GameManager : MonoBehaviour
                 rb.angularVelocity = Vector3.zero;
             }
 
-            // Reset ball state
+            // Reset kinematic ball state (custom physics — this is the true velocity store)
             BilliardBall ball = _playerInstance.GetComponent<BilliardBall>();
             if (ball != null)
             {
-                ball.currentSideSpin = 0f;
+                ball.ResetState();
             }
-
         }
         else
         {
@@ -341,24 +369,33 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // Checks whether all children under enemiesParent are destroyed -> triggers win flow.
+    // Checks whether all enemies in the current level are cleared.
+    // If so, advances to the next level or triggers the win if it was the last.
     private void CheckForWin()
     {
-        // Resolve parent if null (try find by name)
-        if (enemiesParent == null && !string.IsNullOrEmpty(enemiesParentName))
-        {
-            var found = GameObject.Find(enemiesParentName);
-            if (found != null)
-                enemiesParent = found.transform;
-        }
+        if (enemyLevelParents == null || enemyLevelParents.Count == 0) return;
+        if (_currentLevelIndex >= enemyLevelParents.Count) return;
 
-        if (enemiesParent == null) return;
+        Transform currentParent = enemyLevelParents[_currentLevelIndex];
+        if (currentParent == null) return;
 
-        // If no child enemies remain, declare win.
-        if (enemiesParent.childCount == 0)
+        // Current level not yet cleared
+        if (currentParent.childCount > 0) return;
+
+        bool isLastLevel = _currentLevelIndex >= enemyLevelParents.Count - 1;
+
+        if (isLastLevel)
         {
+            // All levels cleared — trigger win
             winCheck = true;
             ToggleEndScenePanel(isWin: true);
+        }
+        else
+        {
+            // Advance to the next level
+            _currentLevelIndex++;
+            Rounds = _currentLevelIndex;
+            ActivateCurrentLevel();
         }
     }
 
