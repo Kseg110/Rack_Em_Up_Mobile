@@ -21,7 +21,7 @@ public class AimingSystem
     [SerializeField] private bool  enableTouchAiming = true;
 
     [Header("Curve Shot Settings")]
-    [SerializeField] private float maxCurveIntensity = 3.0f;
+    //[SerializeField] private float maxCurveIntensity = 3.0f;
 
     #endregion
 

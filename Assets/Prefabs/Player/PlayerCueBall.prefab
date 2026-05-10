@@ -15,7 +15,6 @@ GameObject:
   - component: {fileID: 8820608865305665619}
   - component: {fileID: 5536545535300245337}
   - component: {fileID: 2903419006329229142}
-  - component: {fileID: 4264112315531624967}
   - component: {fileID: 1617351716242497224}
   m_Layer: 10
   m_Name: PlayerCueBall
@@ -23,7 +22,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1332006784564033225
 Transform:
   m_ObjectHideFlags: 0
@@ -282,14 +281,13 @@ MonoBehaviour:
     touchSensitivity: 1
     minTouchDistance: 1
     enableTouchAiming: 1
-    maxCurveIntensity: 3
   rigidbodyConfig:
     useGravity: 0
     isKinematic: 0
     linearDamping: 1
     angularDamping: 2
     constraints: 56
-  trajectoryProjection: {fileID: 4264112315531624967}
+  trajectoryProjection: {fileID: 0}
   arrowIndicator: {fileID: 5578895209294270696, guid: 337332061f85ec245b496fda733ca36a, type: 3}
   minPowerColor: {r: 1, g: 1, b: 1, a: 1}
   maxPowerColor: {r: 1, g: 0, b: 0, a: 1}
@@ -297,26 +295,6 @@ MonoBehaviour:
   powerBar: {fileID: 8910901106363009479}
   shootButton: {fileID: 0}
   spinButton: {fileID: 0}
---- !u!114 &4264112315531624967
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 690765546428489236}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e6655a9c68f702a4180ecc05503a07dc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Projection
-  ballPhysicsMaterial: {fileID: 0}
-  wallPhysicsMaterial: {fileID: 0}
-  _obstaclesParent: {fileID: 0}
-  _line: {fileID: 5536545535300245337}
-  _maxPhysicsFrameIterations: 1
-  _curvePreviewLine: {fileID: 0}
-  _billiardBall: {fileID: 0}
-  _curvePreviewSteps: 20
 --- !u!114 &1617351716242497224
 MonoBehaviour:
   m_ObjectHideFlags: 0

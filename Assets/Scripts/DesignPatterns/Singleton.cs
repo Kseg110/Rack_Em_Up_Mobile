@@ -9,24 +9,18 @@ public abstract class Singleton<T> : MonoBehaviour where T : Component
         get
         {
             if (_instance) return _instance;
-            try
-            {
-                _instance = FindFirstObjectByType<T>();
+            _instance = FindFirstObjectByType<T>();
 
-                if (!_instance) throw new UnassignedReferenceException("Input Manager is Unassiged");
-            }
-            catch (System.Exception e)
+            if (!_instance)
             {
-                Debug.LogException(e);
-                GameObject obj = new GameObject(typeof(T).Name);
-                _instance = obj.AddComponent<T>();
-                DontDestroyOnLoad(_instance);
+                throw new UnassignedReferenceException($"{typeof(T).Name} singleton is unassigned in the scene. Please ensure an instance exists.");
             }
 
             return _instance;
         }
     }
-    private void Awake()
+
+    protected virtual void Awake()
     {
         if (!_instance)
         {

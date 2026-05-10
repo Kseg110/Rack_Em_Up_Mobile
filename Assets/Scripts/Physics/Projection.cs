@@ -48,7 +48,19 @@ public class Projection : PhysicsMaterialManager
 
     private void CreatePhysicsScene()
     {
-        _simulationScene = SceneManager.CreateScene("Simulation", new CreateSceneParameters(LocalPhysicsMode.Physics3D));
+        string simulationSceneName = "Simulation";
+        Scene existing = SceneManager.GetSceneByName(simulationSceneName);
+        if (existing.IsValid())
+        {
+            SceneManager.UnloadSceneAsync(existing);
+            // Wait for unload to complete before creating again, or use a coroutine
+        }
+        else
+        {
+            SceneManager.CreateScene(simulationSceneName);
+        }
+
+        _simulationScene = SceneManager.GetSceneByName(simulationSceneName);
         _physicsScene    = _simulationScene.GetPhysicsScene();
 
         if (_obstaclesParent == null)
@@ -92,7 +104,16 @@ public class Projection : PhysicsMaterialManager
     {
         if (_line != null) return;
 
-        Debug.LogWarning("[Projection] _line not assigned — creating fallback LineRenderer.");
+        // Try to find the PlayerCueBall in the scene
+        if (_billiardBall != null)
+        {
+            // Try to get the LineRenderer component directly from PlayerCueBall
+            _line = _billiardBall.GetComponent<LineRenderer>();
+            if (_line != null) return;
+        }
+
+        // Fallback: create a new LineRenderer if not found
+        Debug.LogWarning("[Projection] _line not assigned and not found on PlayerCueBall — creating fallback LineRenderer.");
         var obj = new GameObject("TrajectoryLine");
         _line             = obj.AddComponent<LineRenderer>();
         _line.material    = new Material(Shader.Find("Sprites/Default"));
@@ -204,6 +225,7 @@ public class Projection : PhysicsMaterialManager
     public Vector3[] GetSpinCurvePoints(Vector3 startPos, Vector3 velocity, Vector2 spin, int pointCount)
     {
         if (_billiardBall == null) ResolveBilliardBallReference();
+        ResolveBilliardBallReference();
 
         float curveStrength = _billiardBall != null ? _billiardBall.curveStrength        : 15f;
         float topSpinEffect = _billiardBall != null ? _billiardBall.topSpinEffect         : 8f;
