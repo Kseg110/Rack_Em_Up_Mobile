@@ -1,8 +1,9 @@
-using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.SceneManagement;
+using System;
 using TMPro;
+using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameCanvasManager : MonoBehaviour
 {
@@ -23,7 +24,7 @@ public class GameCanvasManager : MonoBehaviour
     public Button returnToMenuButton;
     public Button restartButton;
 
-    [Header("End Scene Panel")] // optional - it will look for the buttons if not applied manually 
+    [Header("End Scene Panel")]
     [Tooltip("If not assigned the script will try to find 'EndScenePanel' or 'EndScene' in the scene.")]
     public GameObject endScenePanel;
     [Tooltip("If not assigned the script will try to find 'RestartButton' child under EndScenePanel.")]
@@ -37,27 +38,28 @@ public class GameCanvasManager : MonoBehaviour
     {
         SetupButtons();
         SetupEndSceneButtons();
-        // Delay initialization to ensure GameManager is ready
         Invoke(nameof(InitializeHUD), 0.1f);
     }
 
-    void Update()
+    private void OnEnable()
     {
-        // Try to initialize if not yet done
-        if (!isInitialized && GameManager.Instance != null)
+        if (GameManager.Instance != null)
         {
-            InitializeHUD();
+            GameManager.Instance.OnLivesChanged += UpdateLives;
+            GameManager.Instance.OnShotsChanged += UpdateShots;
+            GameManager.Instance.OnRoundsChanged += UpdateLevel;
+            GameManager.Instance.OnGameEnded += ShowEndScene;
         }
-        
-        // Right-click or ESC to pause
-        if (Mouse.current != null && Mouse.current.rightButton.wasPressedThisFrame)
-        {
-            TogglePause();
-        }
+    }
 
-        if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+    private void OnDisable()
+    {
+        if (GameManager.Instance != null)
         {
-            TogglePause();
+            GameManager.Instance.OnLivesChanged -= UpdateLives;
+            GameManager.Instance.OnShotsChanged -= UpdateShots;
+            GameManager.Instance.OnRoundsChanged -= UpdateLevel;
+            GameManager.Instance.OnGameEnded -= ShowEndScene;
         }
     }
 
@@ -88,10 +90,8 @@ public class GameCanvasManager : MonoBehaviour
         }
     }
 
-    // Try to wire the EndScene panel buttons. Safe if fields already assigned.
     private void SetupEndSceneButtons()
     {
-        // Resolve panel if needed
         if (endScenePanel == null)
         {
             var found = GameObject.Find("EndScenePanel");
@@ -103,7 +103,6 @@ public class GameCanvasManager : MonoBehaviour
 
         if (endScenePanel != null)
         {
-            // Try to resolve Restart button
             if (endRestartButton == null)
             {
                 var restartTf = endScenePanel.transform.Find("RestartButton");
@@ -116,7 +115,6 @@ public class GameCanvasManager : MonoBehaviour
                 }
             }
 
-            // Try to resolve Quit button
             if (endQuitButton == null)
             {
                 var quitTf = endScenePanel.transform.Find("QuitButton");
@@ -129,7 +127,6 @@ public class GameCanvasManager : MonoBehaviour
                 }
             }
 
-            // Wire listeners (use existing methods)
             if (endRestartButton != null)
             {
                 endRestartButton.onClick.RemoveAllListeners();
@@ -144,10 +141,8 @@ public class GameCanvasManager : MonoBehaviour
         }
     }
 
-    // Public method used by GameManager to show the end scene UI.
     public void ShowEndScene(bool isWin)
     {
-        // Ensure we have the panel and the buttons wired.
         if (endScenePanel == null)
         {
             var found = GameObject.Find("EndScenePanel");
@@ -159,7 +154,6 @@ public class GameCanvasManager : MonoBehaviour
 
         if (endScenePanel == null) return;
 
-        // Toggle titles (match names used in prefab)
         var lossTitle = endScenePanel.transform.Find("LossTitle");
         var winTitle = endScenePanel.transform.Find("WinTitle");
         if (lossTitle != null) lossTitle.gameObject.SetActive(!isWin);
@@ -169,7 +163,6 @@ public class GameCanvasManager : MonoBehaviour
         Time.timeScale = 0f;
     }
 
-    // Public hide method (optional)
     public void HideEndScene()
     {
         if (endScenePanel != null)
@@ -180,24 +173,13 @@ public class GameCanvasManager : MonoBehaviour
     private void InitializeHUD()
     {
         if (isInitialized) return;
-        
+
         if (GameManager.Instance != null)
         {
-            // Initialize all HUD elements with current values
             UpdateLives(GameManager.Instance.Lives);
             UpdateShots(GameManager.Instance.Shots);
             UpdateLevel(GameManager.Instance.Rounds);
-            
-            // Unsubscribe first to prevent duplicates
-            GameManager.Instance.OnLivesChanged -= UpdateLives;
-            GameManager.Instance.OnShotsChanged -= UpdateShots;
-            GameManager.Instance.OnRoundsChanged -= UpdateLevel;
-            
-            // Subscribe to all events
-            GameManager.Instance.OnLivesChanged += UpdateLives;
-            GameManager.Instance.OnShotsChanged += UpdateShots;
-            GameManager.Instance.OnRoundsChanged += UpdateLevel;
-            
+
             isInitialized = true;
         }
 
@@ -206,7 +188,6 @@ public class GameCanvasManager : MonoBehaviour
             pauseMenuPanel.SetActive(false);
         }
 
-        // Also ensure EndScene panel hidden initially if present
         if (endScenePanel != null)
             endScenePanel.SetActive(false);
     }
@@ -246,32 +227,29 @@ public class GameCanvasManager : MonoBehaviour
     private void ReturnToMenu()
     {
         Time.timeScale = 1f;
-        
-        // Reset GameManager values for next game
+
         if (GameManager.Instance != null)
         {
-            GameManager.Instance.Lives = GameManager.Instance.maxLives;
+            GameManager.Instance.Lives = GameManager.Instance.MaxLives;
             GameManager.Instance.Shots = 10;
             GameManager.Instance.Rounds = 0;
         }
-        
+
         SceneManager.LoadScene(0);
     }
 
     private void RestartGame()
     {
         Time.timeScale = 1f;
-        
+
         if (GameManager.Instance != null)
         {
             GameManager.Instance.SetLoadFromCheckpoint(false);
-            
-            // Reset stats
-            GameManager.Instance.Lives = GameManager.Instance.maxLives;
+            GameManager.Instance.Lives = GameManager.Instance.MaxLives;
             GameManager.Instance.Shots = 10;
             GameManager.Instance.Rounds = 0;
         }
-        
+
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
@@ -279,10 +257,8 @@ public class GameCanvasManager : MonoBehaviour
     {
         if (livesText != null)
         {
-            // Use SetText to avoid allocations and ForceMeshUpdate to ensure TMP rebuilds the mesh immediately.
             livesText.SetText("Lives: {0}", lives);
             livesText.ForceMeshUpdate();
-
         }
     }
 
@@ -292,7 +268,6 @@ public class GameCanvasManager : MonoBehaviour
         {
             shotsText.SetText("Shots: {0}", shots);
             shotsText.ForceMeshUpdate();
-
         }
     }
 
@@ -319,6 +294,7 @@ public class GameCanvasManager : MonoBehaviour
             GameManager.Instance.OnLivesChanged -= UpdateLives;
             GameManager.Instance.OnShotsChanged -= UpdateShots;
             GameManager.Instance.OnRoundsChanged -= UpdateLevel;
+            GameManager.Instance.OnGameEnded -= ShowEndScene;
         }
     }
 }

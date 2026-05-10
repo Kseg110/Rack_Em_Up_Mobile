@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
 
-public class CanvasManager : MonoBehaviour
+public class CanvasManager : Singleton<CanvasManager>
 {
     [Header("Main Menu Buttons")]
     public Button playButton;
@@ -16,6 +16,20 @@ public class CanvasManager : MonoBehaviour
     [Header("Panels")]
     public GameObject mainMenuPanel;
     public GameObject settingsPanel;
+    public GameObject audioPanel;
+
+    protected override void Awake()
+    {
+        if (_instance == null)
+        {
+            _instance = this;
+            // Do NOT call DontDestroyOnLoad for UI managers
+        }
+        else if (_instance != this)
+        {
+            Destroy(gameObject);
+        }
+    }
 
     void Start()
     {
@@ -63,7 +77,7 @@ public class CanvasManager : MonoBehaviour
 
     void QuitGame()
     {
-        Time.timeScale = 1f; 
+        Time.timeScale = 1f;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 #if UNITY_EDITOR
@@ -81,6 +95,6 @@ public class CanvasManager : MonoBehaviour
         }
 
         Time.timeScale = 1f;
-        SceneManager.LoadScene(1); 
+        SceneManager.LoadScene(1);
     }
 }

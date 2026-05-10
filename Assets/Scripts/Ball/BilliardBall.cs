@@ -84,8 +84,8 @@ public class BilliardBall : MonoBehaviour
         }
 
         // Try to route to GameManager SFX mixer group if available
-        if (GameManager.Instance != null && GameManager.Instance.sfxMixerGroup != null)
-            audioSource.outputAudioMixerGroup = GameManager.Instance.sfxMixerGroup;
+        if (GameManager.Instance != null && AudioManager.Instance.sfxMixerGroup != null)
+            audioSource.outputAudioMixerGroup = AudioManager.Instance.sfxMixerGroup;
     }
 
     private void FixedUpdate()

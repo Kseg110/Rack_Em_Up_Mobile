@@ -3,15 +3,11 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
 
 [DefaultExecutionOrder(-10)]
-public class GameManager : MonoBehaviour
+public class GameManager : Singleton<GameManager>
 {
-    public AudioMixerGroup masterMixerGroup;
-    public AudioMixerGroup musicMixerGroup;
-    public AudioMixerGroup sfxMixerGroup;
 
     public delegate void PlayerSpawnDelegate(BilliardController playerInstance);
     public event PlayerSpawnDelegate OnPlayerControllerCreated;
@@ -22,59 +18,42 @@ public class GameManager : MonoBehaviour
     public BilliardController PlayerInstance => _playerInstance;
     #endregion
 
-    #region UI References
-    // Removed EndScenePanel and prefab fields. GameCanvasManager is now authoritative for end UI.
-    #endregion
-
     [Header("Win / Enemy Parents (ordered by level)")]
-    [Tooltip("Assign Lvl1Enemies, Lvl2Enemies, etc. in order. Each parent is activated when the previous level is cleared.")]
+    [Tooltip("Assign Enemy Parents; Each parent is activated when the previous level is cleared.")]
     public List<Transform> enemyLevelParents = new List<Transform>();
     [Tooltip("Fallback names to search for if enemyLevelParents list is empty (e.g. 'Lvl1Enemies', 'Lvl2Enemies').")]
     public List<string> enemyLevelParentNames = new List<string> { "Lvl1Enemies", "Lvl2Enemies" };
 
     private int _currentLevelIndex = 0;
 
-    private AudioSource audioSource;
-
-    // Events for UI updates
+    #region UI Events
+    // Add events for UI
     public event Action<int> OnLivesChanged;
     public event Action<int> OnShotsChanged;
     public event Action<int> OnRoundsChanged;
-    //public event Action<int> OnScoreChanged;
+    public event Action<bool> OnGameEnded; // true = win, false = loss
 
-    #region Stats
-    public int maxLives = 7;
+    // Backing fields
     private int _lives = 7;
     private int _shots = 10;
-    private int _maxShots = 10;
     private int _rounds = 0;
+    public int MaxLives { get; set; } = 7;
     private bool winCheck = false;
-    #endregion
 
     public int Lives
     {
         get => _lives;
         set
         {
-            if (value <= 0)
+            if (_lives != value)
             {
-                _lives = 0;
-                // ensure loss path shows UI (GameCanvasManager will pause)
-                ToggleEndScenePanel(isWin: false);
+                _lives = Mathf.Clamp(value, 0, 7);
+                OnLivesChanged?.Invoke(_lives);
+                if (_lives <= 0)
+                {
+                    EndGame(false);
+                }
             }
-            else if (value < _lives)
-            {
-                _lives = value;
-            }
-            else if (value > maxLives)
-            {
-                _lives = maxLives;
-            }
-            else
-            {
-                _lives = value;
-            }
-            OnLivesChanged?.Invoke(_lives);
         }
     }
 
@@ -83,8 +62,11 @@ public class GameManager : MonoBehaviour
         get => _shots;
         set
         {
-            _shots = value;
-            OnShotsChanged?.Invoke(_shots);
+            if (_shots != value)
+            {
+                _shots = value;
+                OnShotsChanged?.Invoke(_shots);
+            }
         }
     }
 
@@ -93,35 +75,22 @@ public class GameManager : MonoBehaviour
         get => _rounds;
         set
         {
-            _rounds = value;
-            OnRoundsChanged?.Invoke(_rounds);
+            if (_rounds != value)
+            {
+                _rounds = value;
+                OnRoundsChanged?.Invoke(_rounds);
+            }
         }
-    }
-
-    #region Singleton Pattern
-    private static GameManager _instance;
-    public static GameManager Instance => _instance;
-
-    private void Awake()
-    {
-        if (_instance == null)
-        {
-            _instance = this;
-            DontDestroyOnLoad(gameObject);
-
-            // Subscribe to scene loading to spawn player
-            SceneManager.sceneLoaded += OnSceneLoaded;
-
-            return;
-        }
-
-        Destroy(gameObject);
     }
     #endregion
+    private new void Awake()
+    {
+        // Subscribe to scene loading to spawn player que ball
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        // Check if this is the game scene (not menu scene)
         if (scene.buildIndex == 1 || scene.name.Contains("Game"))
         {
             SpawnPlayer();
@@ -221,9 +190,6 @@ public class GameManager : MonoBehaviour
         // For mobile, you might want to handle back button presses instead of Escape
         HandleMobileBackButton();
 
-        // Ensure there is always one AudioListener in the scene
-        EnsureAudioListener();
-
         // Only perform win checks while in the actual game scene and if win not already detected
         if (!winCheck && (SceneManager.GetActiveScene().buildIndex == 1 || SceneManager.GetActiveScene().name.Contains("Game")))
         {
@@ -257,23 +223,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void EnsureAudioListener()
-    {
-        if (FindObjectsByType<AudioListener>(FindObjectsSortMode.None).Length == 0)
-        {
-            if (Camera.main != null && Camera.main.GetComponent<AudioListener>() == null)
-            {
-                Camera.main.gameObject.AddComponent<AudioListener>();
-            }
-            else if (Camera.main == null)
-            {
-                GameObject fallbackCam = new ("FallbackCamera");
-                fallbackCam.AddComponent<Camera>();
-                fallbackCam.AddComponent<AudioListener>();
-            }
-        }
-    }
-
     private void TogglePause()
     {
         isPaused = !isPaused;
@@ -282,24 +231,7 @@ public class GameManager : MonoBehaviour
 
     private void GameOver()
     {
-        // Delegate display to GameCanvasManager (authoritative UI owner)
-        ToggleEndScenePanel(isWin: false);
-    }
-
-    // Centralized helper to show end scene panel and toggle Win/Loss titles.
-    // GameCanvasManager is authoritative for the end UI.
-    private void ToggleEndScenePanel(bool isWin)
-    {
-        var canvasMgr = UnityEngine.Object.FindAnyObjectByType<GameCanvasManager>();
-
-        if (canvasMgr != null)
-        {
-            canvasMgr.ShowEndScene(isWin);
-        }
-        else
-        {
-            Debug.LogWarning("[GameManager] GameCanvasManager not found. End scene UI not shown.");
-        }
+        EndGame(false);
     }
 
     public Transform spawnPoint;
@@ -388,7 +320,7 @@ public class GameManager : MonoBehaviour
         {
             // All levels cleared — trigger win
             winCheck = true;
-            ToggleEndScenePanel(isWin: true);
+            EndGame(true);
         }
         else
         {
@@ -445,8 +377,11 @@ public class GameManager : MonoBehaviour
             Destroy(_playerInstance.gameObject);
             _playerInstance = null;
         }
+    }
 
-        // Delegate to GameCanvasManager for showing loss UI
-        ToggleEndScenePanel(isWin: false);
+    private void EndGame(bool isWin)
+    {
+        winCheck = true;
+        OnGameEnded?.Invoke(isWin);
     }
 }
