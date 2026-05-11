@@ -313,7 +313,7 @@ public class GameManager : Singleton<GameManager>
                 rb.angularVelocity = Vector3.zero;
             }
 
-            // Reset kinematic ball state (custom physics — this is the true velocity store)
+            // Reset kinematic ball state (custom physics Â— this is the true velocity store)
             BilliardBall ball = _playerInstance.GetComponent<BilliardBall>();
             if (ball != null)
             {

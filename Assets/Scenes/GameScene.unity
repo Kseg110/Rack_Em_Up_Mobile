@@ -1349,17 +1349,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
---- !u!114 &1878585382 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4925345906689786507, guid: acbe807d5f7a1e14ab541f27b6c0945d, type: 3}
-  m_PrefabInstance: {fileID: 1791865750}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 100628db877ee6e48888c2cc231b9c4a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ShootButton
 --- !u!1 &1882348776
 GameObject:
   m_ObjectHideFlags: 0
@@ -1591,79 +1580,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 4824518857083477826, guid: 2266d7cb670fb0047802c07a4a08e17c, type: 3}
   m_PrefabInstance: {fileID: 1097236128962301506}
   m_PrefabAsset: {fileID: 0}
---- !u!1001 &1164584677554542309
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 690765546428489236, guid: b4a8fa5b6602d4b4faf8a815fc594195, type: 3}
-      propertyPath: m_Name
-      value: PlayerCueBall
-      objectReference: {fileID: 0}
-    - target: {fileID: 690765546428489236, guid: b4a8fa5b6602d4b4faf8a815fc594195, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1211747612235648001, guid: b4a8fa5b6602d4b4faf8a815fc594195, type: 3}
-      propertyPath: m_Camera
-      value: 
-      objectReference: {fileID: 519420031}
-    - target: {fileID: 1332006784564033225, guid: b4a8fa5b6602d4b4faf8a815fc594195, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -3.17
-      objectReference: {fileID: 0}
-    - target: {fileID: 1332006784564033225, guid: b4a8fa5b6602d4b4faf8a815fc594195, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -0.25
-      objectReference: {fileID: 0}
-    - target: {fileID: 1332006784564033225, guid: b4a8fa5b6602d4b4faf8a815fc594195, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1332006784564033225, guid: b4a8fa5b6602d4b4faf8a815fc594195, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1332006784564033225, guid: b4a8fa5b6602d4b4faf8a815fc594195, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1332006784564033225, guid: b4a8fa5b6602d4b4faf8a815fc594195, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1332006784564033225, guid: b4a8fa5b6602d4b4faf8a815fc594195, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1332006784564033225, guid: b4a8fa5b6602d4b4faf8a815fc594195, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1332006784564033225, guid: b4a8fa5b6602d4b4faf8a815fc594195, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1332006784564033225, guid: b4a8fa5b6602d4b4faf8a815fc594195, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2903419006329229142, guid: b4a8fa5b6602d4b4faf8a815fc594195, type: 3}
-      propertyPath: shootButton
-      value: 
-      objectReference: {fileID: 1878585382}
-    - target: {fileID: 4264112315531624967, guid: b4a8fa5b6602d4b4faf8a815fc594195, type: 3}
-      propertyPath: _obstaclesParent
-      value: 
-      objectReference: {fileID: 191268363}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: b4a8fa5b6602d4b4faf8a815fc594195, type: 3}
 --- !u!1001 &1467419801076998977
 PrefabInstance:
   m_ObjectHideFlags: 0

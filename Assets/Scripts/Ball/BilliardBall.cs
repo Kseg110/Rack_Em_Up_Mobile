@@ -120,7 +120,7 @@ public class BilliardBall : MonoBehaviour
 
     #endregion
 
-    #region Public API – Force & Spin
+    #region Public API â€“ Force & Spin
 
     public void Initialize(Rigidbody rigidbody)
     {
