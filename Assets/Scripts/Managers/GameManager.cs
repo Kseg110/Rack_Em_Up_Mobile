@@ -18,12 +18,6 @@ public class GameManager : Singleton<GameManager>
     public BilliardController PlayerInstance => _playerInstance;
     #endregion
 
-    [Header("Win / Enemy Parents (ordered by level)")]
-    [Tooltip("Assign Enemy Parents; Each parent is activated when the previous level is cleared.")]
-    public List<Transform> enemyLevelParents = new List<Transform>();
-    [Tooltip("Fallback names to search for if enemyLevelParents list is empty (e.g. 'Lvl1Enemies', 'Lvl2Enemies').")]
-    public List<string> enemyLevelParentNames = new List<string> { "Lvl1Enemies", "Lvl2Enemies" };
-
     private int _currentLevelIndex = 0;
 
     #region UI Events
@@ -117,53 +111,22 @@ public class GameManager : Singleton<GameManager>
     {
         if (scene.buildIndex == 1 || scene.name.Contains("Game"))
         {
+            // 1. Start the first round (instantiate table/enemies)
+            var roundManager = UnityEngine.Object.FindAnyObjectByType<RoundManager>();
+            if (roundManager != null)
+            {
+                roundManager.StartFirstRound();
+            }
+
             SpawnPlayer();
-
-            // Resolve enemy level parents if not assigned in the inspector
-            ResolveLevelParents();
-
-            // Start from the first level
-            _currentLevelIndex = 0;
-            ActivateCurrentLevel();
-
-            // Reset win flag for a new playthrough
             winCheck = false;
 
-            // Ask GameCanvasManager to hide the end scene UI if present
             var canvasMgr = UnityEngine.Object.FindAnyObjectByType<GameCanvasManager>();
             if (canvasMgr != null)
                 canvasMgr.HideEndScene();
         }
     }
 
-    // Attempts to populate enemyLevelParents from enemyLevelParentNames if the list is empty.
-    private void ResolveLevelParents()
-    {
-        if (enemyLevelParents == null)
-            enemyLevelParents = new List<Transform>();
-
-        // Only auto-resolve if nothing was assigned in the inspector
-        if (enemyLevelParents.Count == 0 && enemyLevelParentNames != null)
-        {
-            foreach (var parentName in enemyLevelParentNames)
-            {
-                if (string.IsNullOrEmpty(parentName)) continue;
-                var found = GameObject.Find(parentName);
-                if (found != null)
-                    enemyLevelParents.Add(found.transform);
-            }
-        }
-    }
-
-    // Deactivates all level parents then activates only the current one.
-    private void ActivateCurrentLevel()
-    {
-        for (int i = 0; i < enemyLevelParents.Count; i++)
-        {
-            if (enemyLevelParents[i] != null)
-                enemyLevelParents[i].gameObject.SetActive(i == _currentLevelIndex);
-        }
-    }
 
     private void OnEnable()
     {
@@ -200,15 +163,27 @@ public class GameManager : Singleton<GameManager>
 
     #endregion
 
+    //public void DestroyAllEnemiesInScene()
+    //{
+    //    var allEnemies = GameObject.FindGameObjectsWithTag("Enemy");
+    //    foreach (var enemy in allEnemies)
+    //    {
+    //        Destroy(enemy);
+    //    }
+    //}
+
     private bool isPaused = false;
 
     void Update()
     {
-        // Keep only essential Update logic
-        // For mobile, you might want to handle back button presses instead of Escape
         HandleMobileBackButton();
 
-        // Only perform win checks while in the actual game scene and if win not already detected
+        // Debug: Destroy all enemies with "K"
+        //if (Input.GetKeyDown(KeyCode.K))
+        //{
+        //    DestroyAllEnemiesInScene();
+        //}
+
         if (!winCheck && (SceneManager.GetActiveScene().buildIndex == 1 || SceneManager.GetActiveScene().name.Contains("Game")))
         {
             CheckForWin();
@@ -333,9 +308,7 @@ public class GameManager : Singleton<GameManager>
         var roundManager = UnityEngine.Object.FindAnyObjectByType<RoundManager>();
         if (roundManager == null) return;
 
-        // Check if all enemies in the current round are cleared
-        Transform currentParent = enemyLevelParents[_currentLevelIndex];
-        if (currentParent == null || currentParent.childCount > 0) return;
+        if (!roundManager.AreAllEnemiesCleared())
 
         // Notify RoundManager to advance
         roundManager.OnCurrentRoundCleared();
