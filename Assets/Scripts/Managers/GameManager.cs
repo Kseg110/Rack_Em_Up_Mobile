@@ -279,8 +279,17 @@ public class GameManager : Singleton<GameManager>
         if (_playerInstance != null)
         {
             _playerInstance.transform.position = position;
-
-            // Reset rigidbody (belt-and-suspenders for any non-kinematic forces)
+            StopPlayerMovement();
+        }
+        else
+        {
+            SpawnPlayer();
+        }
+    }
+    public void StopPlayerMovement()
+    {
+        if (_playerInstance != null)
+        {
             Rigidbody rb = _playerInstance.GetComponent<Rigidbody>();
             if (rb != null)
             {
@@ -288,21 +297,14 @@ public class GameManager : Singleton<GameManager>
                 rb.angularVelocity = Vector3.zero;
             }
 
-            // Reset kinematic ball state (custom physics — this is the true velocity store)
             BilliardBall ball = _playerInstance.GetComponent<BilliardBall>();
             if (ball != null)
             {
                 ball.ResetState();
             }
         }
-        else
-        {
-            SpawnPlayer();
-        }
     }
-
     // Checks whether all enemies in the current level are cleared.
-    // If so, advances to the next level or triggers the win if it was the last.
     private void CheckForWin()
     {
         var roundManager = UnityEngine.Object.FindAnyObjectByType<RoundManager>();

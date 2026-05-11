@@ -30,6 +30,12 @@ public class RoundManager : MonoBehaviour
         if (currentRoundIndex < roundPrefabs.Count)
         {
             SpawnRound(currentRoundIndex);
+            var gameManager = UnityEngine.Object.FindAnyObjectByType<GameManager>();
+            if (gameManager != null)
+            {
+                Vector3 spawnPos = GetCurrentPlayerSpawnPosition();
+                gameManager.RespawnPlayer(spawnPos);
+            }
             OnRoundAdvanced?.Invoke(currentRoundIndex, roundPrefabs.Count);
         }
         else
@@ -40,6 +46,12 @@ public class RoundManager : MonoBehaviour
 
     public void OnCurrentRoundCleared()
     {
+        var gameManager = UnityEngine.Object.FindAnyObjectByType<GameManager>();
+        if (gameManager != null)
+        {
+            gameManager.StopPlayerMovement();
+        }
+
         NextRound();
     }
 
