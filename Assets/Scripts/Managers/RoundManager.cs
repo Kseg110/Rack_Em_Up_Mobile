@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -24,7 +25,7 @@ public class RoundManager : MonoBehaviour
 
     public void NextRound()
     {
-        //DestroyCurrentRound();
+        DestroyCurrentRound();
         currentRoundIndex++;
         if (currentRoundIndex < roundPrefabs.Count)
         {
@@ -76,12 +77,14 @@ public class RoundManager : MonoBehaviour
 
         // find all enemies in game scene for the round
         var allEnemies = GameObject.FindGameObjectsWithTag("Enemy");
+        int count = 0;
         foreach(var enemy in allEnemies)
         {
             if (enemy.transform.IsChildOf(currentRoundInstance.transform))
-                return false; // at least one enemy remains in the level
+                count++;
         }
-        return true;
+        //Debug.Log($"[RoundManager] Enemies found in current round: {count}");
+        return count == 0;
     }
 
 

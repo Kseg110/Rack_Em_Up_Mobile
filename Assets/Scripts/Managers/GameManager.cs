@@ -309,6 +309,7 @@ public class GameManager : Singleton<GameManager>
         if (roundManager == null) return;
 
         if (!roundManager.AreAllEnemiesCleared())
+            return;
 
         // Notify RoundManager to advance
         roundManager.OnCurrentRoundCleared();
