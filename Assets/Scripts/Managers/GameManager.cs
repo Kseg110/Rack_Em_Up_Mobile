@@ -87,6 +87,30 @@ public class GameManager : Singleton<GameManager>
     {
         // Subscribe to scene loading to spawn player que ball
         SceneManager.sceneLoaded += OnSceneLoaded;
+
+        var roundManager = UnityEngine.Object.FindAnyObjectByType<RoundManager>();
+        if (roundManager != null)
+        {
+            roundManager.OnRoundAdvanced += HandleRoundAdvanced;
+            roundManager.OnAllRoundsCleared += HandleAllRoundsCleared;
+        }
+    }
+
+    private void HandleRoundAdvanced(int currentRound, int totalRounds)
+    {
+        Rounds = currentRound + 1;
+    }
+
+    private void HandleAllRoundsCleared()
+    {
+        if (Lives > 0 && Shots > 0)
+        {
+            EndGame(true);
+        }
+        else
+        {
+            EndGame(false);
+        }
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -148,7 +172,6 @@ public class GameManager : Singleton<GameManager>
         {
             InputManager.Instance.OnTouchBegin += HandleTouchInput;
             InputManager.Instance.OnTouchEnd += HandleTouchRelease;
-            InputManager.Instance.OnPhoneTilt += HandlePhoneTilt;
         }
     }
 
@@ -159,7 +182,6 @@ public class GameManager : Singleton<GameManager>
         {
             InputManager.Instance.OnTouchBegin -= HandleTouchInput;
             InputManager.Instance.OnTouchEnd -= HandleTouchRelease;
-            InputManager.Instance.OnPhoneTilt -= HandlePhoneTilt;
         }
 
         SceneManager.sceneLoaded -= OnSceneLoaded;
@@ -176,10 +198,6 @@ public class GameManager : Singleton<GameManager>
         // Reserved for gameplay usage; logging removed.
     }
 
-    private void HandlePhoneTilt(Vector3 tiltData)
-    {
-        // Handle phone tilt - could be used for game mechanics
-    }
     #endregion
 
     private bool isPaused = false;
@@ -238,7 +256,31 @@ public class GameManager : Singleton<GameManager>
 
     private void SpawnPlayer()
     {
-        // Don't spawn if player already exists
+        Vector3 spawnPos;
+        var roundManager = UnityEngine.Object.FindAnyObjectByType<RoundManager>();
+        if (roundManager != null)
+        {
+            spawnPos = roundManager.GetCurrentPlayerSpawnPosition();
+        }
+        else
+        {
+
+            // Find spawn point if not assigned
+            if (spawnPoint == null)
+            {
+                GameObject spawnObj = GameObject.Find("PlayerSpawnPoint");
+                if (spawnObj != null)
+                {
+                    spawnPoint = spawnObj.transform;
+                }
+                else
+                {
+                    spawnPoint = null;
+                }
+            }
+            spawnPos = spawnPoint != null ? spawnPoint.position : Vector3.zero;
+        }
+        // Find spawn point if not assigned in inspector
         if (_playerInstance != null)
         {
             return;
@@ -249,25 +291,8 @@ public class GameManager : Singleton<GameManager>
             return;
         }
 
-        // Find spawn point if not assigned
-        if (spawnPoint == null)
-        {
-            GameObject spawnObj = GameObject.Find("PlayerSpawnPoint");
-            if (spawnObj != null)
-            {
-                spawnPoint = spawnObj.transform;
-            }
-            else
-            {
-                spawnPoint = null;
-            }
-        }
-
         // Instantiate player
-        Vector3 spawnPos = spawnPoint != null ? spawnPoint.position : Vector3.zero;
-        Quaternion spawnRot = spawnPoint != null ? spawnPoint.rotation : Quaternion.identity;
-
-        _playerInstance = Instantiate(playerPrefab, spawnPos, spawnRot);
+        _playerInstance = Instantiate(playerPrefab, spawnPos, Quaternion.identity);
         _playerInstance.gameObject.name = "Player";
 
         // Notify listeners
@@ -305,31 +330,17 @@ public class GameManager : Singleton<GameManager>
     // If so, advances to the next level or triggers the win if it was the last.
     private void CheckForWin()
     {
-        if (enemyLevelParents == null || enemyLevelParents.Count == 0) return;
-        if (_currentLevelIndex >= enemyLevelParents.Count) return;
+        var roundManager = UnityEngine.Object.FindAnyObjectByType<RoundManager>();
+        if (roundManager == null) return;
 
+        // Check if all enemies in the current round are cleared
         Transform currentParent = enemyLevelParents[_currentLevelIndex];
-        if (currentParent == null) return;
+        if (currentParent == null || currentParent.childCount > 0) return;
 
-        // Current level not yet cleared
-        if (currentParent.childCount > 0) return;
-
-        bool isLastLevel = _currentLevelIndex >= enemyLevelParents.Count - 1;
-
-        if (isLastLevel)
-        {
-            // All levels cleared — trigger win
-            winCheck = true;
-            EndGame(true);
-        }
-        else
-        {
-            // Advance to the next level
-            _currentLevelIndex++;
-            Rounds = _currentLevelIndex;
-            ActivateCurrentLevel();
-        }
+        // Notify RoundManager to advance
+        roundManager.OnCurrentRoundCleared();
     }
+
 
     public void SetLoadFromCheckpoint(bool value)
     {
