@@ -77,7 +77,7 @@ public class CanvasManager : Singleton<CanvasManager>
 
     void QuitGame()
     {
-        Time.timeScale = 1f; 
+        Time.timeScale = 1f;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 #if UNITY_EDITOR
@@ -95,6 +95,6 @@ public class CanvasManager : Singleton<CanvasManager>
         }
 
         Time.timeScale = 1f;
-        SceneManager.LoadScene(1); 
+        SceneManager.LoadScene(1);
     }
 }

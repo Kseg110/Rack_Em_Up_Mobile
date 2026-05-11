@@ -84,7 +84,7 @@ public class BilliardBall : MonoBehaviour
         }
 
         // Try to route to GameManager SFX mixer group if available
-        if (AudioManager.Instance != null && AudioManager.Instance.sfxMixerGroup != null)
+        if (GameManager.Instance != null && AudioManager.Instance.sfxMixerGroup != null)
             audioSource.outputAudioMixerGroup = AudioManager.Instance.sfxMixerGroup;
     }
 
@@ -120,7 +120,7 @@ public class BilliardBall : MonoBehaviour
 
     #endregion
 
-    #region Public API – Force & Spin
+    #region Public API â€“ Force & Spin
 
     public void Initialize(Rigidbody rigidbody)
     {
