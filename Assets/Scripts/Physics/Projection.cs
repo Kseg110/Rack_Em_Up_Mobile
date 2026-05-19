@@ -51,24 +51,6 @@ public class Projection : PhysicsMaterialManager
         _simulationScene = SceneManager.CreateScene("Simulation", new CreateSceneParameters(LocalPhysicsMode.Physics3D));
         _physicsScene    = _simulationScene.GetPhysicsScene();
 
-        if (_obstaclesParent == null)
-        {
-            Debug.LogWarning("[Projection] _obstaclesParent not assigned — no obstacle ghosts created.");
-            return;
-        }
-
-        foreach (Transform obj in _obstaclesParent)
-        {
-            var ghost = Instantiate(obj.gameObject, obj.position, obj.rotation);
-
-            var ghostRenderer = ghost.GetComponent<Renderer>();
-            if (ghostRenderer != null) ghostRenderer.enabled = false;
-
-            var wallCollider = ghost.GetComponent<Collider>();
-            if (wallCollider != null) wallCollider.material = GetWallMaterial();
-
-            SceneManager.MoveGameObjectToScene(ghost, _simulationScene);
-        }
     }
 
     private void SetupCurvePreviewLine()

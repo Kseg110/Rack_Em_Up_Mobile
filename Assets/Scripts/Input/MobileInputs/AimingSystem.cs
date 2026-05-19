@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Unity.VisualScripting;
+using UnityEngine;
 
 /// <summary>
 /// Handles touch-based aiming for the billiard cue ball.
@@ -80,6 +81,13 @@ public class AimingSystem
                 : screenPos;
 
             UpdateAimingFromScreenPosition(aimPos);
+
+            //-------------------
+            float dragHorizontal = (aimPos.x - dragStartScreenPos.x);
+            float halfScreen = Mathf.Max(1f, Screen.width * 0.5f);
+            float normalized = Mathf.Clamp(dragHorizontal / halfScreen, -1f, 1f);
+            CurveIntensity = normalized * maxCurveIntensity;
+            IsCurveShotActive = Mathf.Abs(CurveIntensity) > 0.01f;
         }
         else if (isDragging)
         {
@@ -92,11 +100,25 @@ public class AimingSystem
                     : lastTouchScreenPos;
 
                 UpdateAimingFromScreenPosition(aimPos);
+
+                //---------------------
+                float dragHorizontal = (aimPos.x - dragStartScreenPos.x);
+                float halfScreen = Mathf.Max(1f, Screen.width * 0.5f);
+                float normalized = Mathf.Clamp(dragHorizontal / halfScreen, -1f, 1f);
+                CurveIntensity = normalized * maxCurveIntensity;
+                IsCurveShotActive = Mathf.Abs(CurveIntensity) > 0.01f;
+
                 lastTouchScreenPos = Vector2.zero;
             }
         }
+        else
+        {
+            // no touching clear curve state
+            CurveIntensity = 0f;
+            IsCurveShotActive = false;
+        }
 
-        UpdateAimLineLength();
+            UpdateAimLineLength();
     }
 
     public void OnTouchRelease()

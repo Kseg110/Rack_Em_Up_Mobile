@@ -18,7 +18,7 @@ public class GameManager : Singleton<GameManager>
     public BilliardController PlayerInstance => _playerInstance;
     #endregion
 
-    private int _currentLevelIndex = 0;
+    //private int _currentLevelIndex = 0;
 
     #region UI Events
     // Add events for UI
@@ -293,8 +293,12 @@ public class GameManager : Singleton<GameManager>
             Rigidbody rb = _playerInstance.GetComponent<Rigidbody>();
             if (rb != null)
             {
-                rb.linearVelocity = Vector3.zero;
-                rb.angularVelocity = Vector3.zero;
+                if (!rb.isKinematic)
+                {
+                    rb.linearVelocity = Vector3.zero;
+                    rb.angularVelocity = Vector3.zero;
+                    rb.Sleep();
+                }
             }
 
             BilliardBall ball = _playerInstance.GetComponent<BilliardBall>();
