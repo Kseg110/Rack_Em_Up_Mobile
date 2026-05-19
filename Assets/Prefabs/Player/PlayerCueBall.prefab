@@ -170,7 +170,7 @@ LineRenderer:
   m_SmallMeshCulling: 1
   m_ForceMeshLod: -1
   m_MeshLodSelectionBias: 0
-  m_RenderingLayerMask: 1
+  m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 10306, guid: 0000000000000000f000000000000000, type: 0}
@@ -192,8 +192,8 @@ LineRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: -2022627439
-  m_SortingLayer: 1
+  m_SortingLayerID: -406897887
+  m_SortingLayer: 4
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Positions:
@@ -311,7 +311,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Projection
   ballPhysicsMaterial: {fileID: 0}
   wallPhysicsMaterial: {fileID: 0}
-  _obstaclesParent: {fileID: 0}
   _line: {fileID: 5536545535300245337}
   _maxPhysicsFrameIterations: 1
   _curvePreviewLine: {fileID: 0}

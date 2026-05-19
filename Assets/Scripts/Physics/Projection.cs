@@ -11,7 +11,7 @@ public class Projection : PhysicsMaterialManager
 {
     #region Inspector Fields
 
-    [SerializeField] private Transform _obstaclesParent;
+    //[SerializeField] private Transform _obstaclesParent;
     [SerializeField] private LineRenderer _line;
     [SerializeField] private int _maxPhysicsFrameIterations;
     [SerializeField] private LineRenderer _curvePreviewLine;
