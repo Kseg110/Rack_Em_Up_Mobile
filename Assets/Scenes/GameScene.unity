@@ -242,7 +242,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
---- !u!1 &19549178 stripped
+--- !u!224 &19549178 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 6904006533836155910, guid: 87cb5c3d5211fa34f865cc3a8713ef53, type: 3}
+  m_PrefabInstance: {fileID: 19549175}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &19549179 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5001493074743059084, guid: 87cb5c3d5211fa34f865cc3a8713ef53, type: 3}
   m_PrefabInstance: {fileID: 19549175}
@@ -553,7 +558,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &564186413
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -755,7 +760,7 @@ MonoBehaviour:
   resumeButton: {fileID: 1467419801076998980}
   returnToMenuButton: {fileID: 1467419801076998979}
   restartButton: {fileID: 1467419801076998981}
-  endScenePanel: {fileID: 19549178}
+  endScenePanel: {fileID: 19549179}
   endRestartButton: {fileID: 19549177}
   endQuitButton: {fileID: 19549176}
 --- !u!1 &619394800
@@ -1771,6 +1776,18 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5909224567730837132, guid: a90597629bce83e4e942373019fb545c, type: 3}
+      propertyPath: roundPrefabs.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5909224567730837132, guid: a90597629bce83e4e942373019fb545c, type: 3}
+      propertyPath: 'roundPrefabs.Array.data[3]'
+      value: 
+      objectReference: {fileID: 2555555163199572076, guid: 13f11ff0db65f5b43b7c313f509eb0d4, type: 3}
+    - target: {fileID: 5909224567730837132, guid: a90597629bce83e4e942373019fb545c, type: 3}
+      propertyPath: playerSpawnPoints.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5909224567730837132, guid: a90597629bce83e4e942373019fb545c, type: 3}
       propertyPath: 'playerSpawnPoints.Array.data[0]'
       value: 
       objectReference: {fileID: 81460366}
@@ -1782,6 +1799,10 @@ PrefabInstance:
       propertyPath: 'playerSpawnPoints.Array.data[2]'
       value: 
       objectReference: {fileID: 325133782}
+    - target: {fileID: 5909224567730837132, guid: a90597629bce83e4e942373019fb545c, type: 3}
+      propertyPath: 'playerSpawnPoints.Array.data[3]'
+      value: 
+      objectReference: {fileID: 19549178}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

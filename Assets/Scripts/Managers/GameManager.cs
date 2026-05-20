@@ -331,8 +331,7 @@ public class GameManager : Singleton<GameManager>
     public void WinGame()
     {
         winCheck = true;
-        SceneManager.sceneLoaded += OnMenuSceneLoaded;
-        SceneManager.LoadScene("Menu");
+        EndGame(true);
     }
 
     private void OnMenuSceneLoaded(Scene scene, LoadSceneMode mode)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem;
 
 public class RoundManager : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class RoundManager : MonoBehaviour
     private GameObject currentRoundInstance;
     private int currentRoundIndex = 0;
 
+    //private PlayerControls inputControls;
     public int CurrentRoundIndex => currentRoundIndex;
 
     public event Action<int, int> OnRoundAdvanced;
@@ -50,6 +52,12 @@ public class RoundManager : MonoBehaviour
         if (gameManager != null)
         {
             gameManager.StopPlayerMovement();
+
+            if (currentRoundIndex == 3)
+            {
+                gameManager.WinGame();
+                return;
+            }
         }
 
         NextRound();
@@ -98,6 +106,31 @@ public class RoundManager : MonoBehaviour
         //Debug.Log($"[RoundManager] Enemies found in current round: {count}");
         return count == 0;
     }
+
+    //public void SkipRound()
+    //{
+    //    if (currentRoundInstance == null)
+    //    {
+    //        Debug.LogWarning("[RoundManager] SkipRound called but no current round instance.");
+    //        return;
+    //    }
+
+    //    var allEnemies = GameObject.FindGameObjectsWithTag("Enemy");
+    //    int destroyed = 0;
+    //    foreach (var enemy in allEnemies)
+    //    {
+    //        if (enemy != null && enemy.transform.IsChildOf(currentRoundInstance.transform))
+    //        {
+    //            Destroy(enemy);
+    //            destroyed++;
+    //        }
+    //    }
+
+    //    Debug.Log($"[RoundManager] SkipRound destroyed {destroyed} enemies in round {currentRoundIndex}.");
+
+    //    // Immediately advance the round (preserves existing OnCurrentRoundCleared behavior)
+    //    OnCurrentRoundCleared();
+    //}
 
 
 }

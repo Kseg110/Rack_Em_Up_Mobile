@@ -344,10 +344,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   playerPrefab: {fileID: 2903419006329229142, guid: b4a8fa5b6602d4b4faf8a815fc594195, type: 3}
-  enemyLevelParents: []
-  enemyLevelParentNames:
-  - Lvl1Enemies
-  - Lvl2Enemies
   spawnPoint: {fileID: 0}
 --- !u!4 &1362258860
 Transform:
