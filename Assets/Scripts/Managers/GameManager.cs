@@ -29,8 +29,9 @@ public class GameManager : Singleton<GameManager>
 
     // Backing fields
     private int _lives = 7;
-    private int _shots = 10;
+    public int _shots = 10;
     private int _rounds = 0;
+
     public int MaxLives { get; set; } = 7;
     private bool winCheck = false;
 

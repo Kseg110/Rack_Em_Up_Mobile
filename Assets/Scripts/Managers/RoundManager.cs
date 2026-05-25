@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
 
+
 public class RoundManager : MonoBehaviour
 {
     public List<GameObject> roundPrefabs; // contains each rounds enemies
@@ -60,6 +61,7 @@ public class RoundManager : MonoBehaviour
             }
         }
 
+        gameManager.Shots = 10;
         NextRound();
     }
 
