@@ -161,6 +161,12 @@ public class GameCanvasManager : MonoBehaviour
 
         endScenePanel.SetActive(true);
         Time.timeScale = 0f;
+
+        // Ensure ads overlay/ad is requested when winning.
+        if (isWin && UnityAdsManager.Instance != null)
+        {
+            UnityAdsManager.Instance.RequestShowOnWin();
+        }
     }
 
     public void HideEndScene()
