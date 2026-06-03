@@ -272,7 +272,7 @@ MonoBehaviour:
   ballPhysicsMaterial: {fileID: 0}
   wallPhysicsMaterial: {fileID: 0}
   maxPower: 50
-  chargeSpeed: 15
+  chargeSpeed: 20
   billiardBall: {fileID: 1617351716242497224}
   aimingSystem:
     groundLayer:
