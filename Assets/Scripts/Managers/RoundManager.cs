@@ -54,6 +54,16 @@ public class RoundManager : MonoBehaviour
         {
             gameManager.StopPlayerMovement();
 
+            // Disable one-hit kill for next round
+            if (gameManager.PlayerInstance != null)
+            {
+                var billiardController = gameManager.PlayerInstance.GetComponent<BilliardController>();
+                if (billiardController != null)
+                {
+                    billiardController.DisableOneHitKill();
+                }
+            }
+
             if (currentRoundIndex == 3)
             {
                 gameManager.WinGame();

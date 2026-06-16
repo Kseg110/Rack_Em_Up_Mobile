@@ -44,6 +44,7 @@ public class BilliardBall : MonoBehaviour
     #region Public State
 
     public float currentSideSpin = 0f;
+    public bool oneHitKillActive = false;
 
     #endregion
 
@@ -301,6 +302,12 @@ public class BilliardBall : MonoBehaviour
 
     private void HandleBallToEnemyCollision(EnemyBallBase enemy, Vector3 normal)
     {
+        if (oneHitKillActive)
+        {
+            PlayCollisionSound(currentVelocity.magnitude / collisionSpeedScale);
+            Destroy(enemy.gameObject);
+            return;
+        }
         // play sound based on speed
         PlayCollisionSound(currentVelocity.magnitude / collisionSpeedScale);
         currentVelocity = collisionResolver.ResolveBallToEnemy(rb, enemy, currentVelocity, normal);
