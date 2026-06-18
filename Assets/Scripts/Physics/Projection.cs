@@ -48,6 +48,7 @@ public class Projection : PhysicsMaterialManager
 
     private void CreatePhysicsScene()
     {
+        if (_simulationScene != null) return;
         _simulationScene = SceneManager.CreateScene("Simulation", new CreateSceneParameters(LocalPhysicsMode.Physics3D));
         _physicsScene    = _simulationScene.GetPhysicsScene();
 

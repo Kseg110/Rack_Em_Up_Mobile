@@ -13,11 +13,24 @@ public class RoundManager : MonoBehaviour
     private GameObject currentRoundInstance;
     private int currentRoundIndex = 0;
 
+    // Cache GameManager reference
+    private GameManager cachedGameManager;
+
     //private PlayerControls inputControls;
     public int CurrentRoundIndex => currentRoundIndex;
 
     public event Action<int, int> OnRoundAdvanced;
     public event Action OnAllRoundsCleared;
+
+    private void Awake()
+    {
+        // Cache GameManager reference at startup
+        cachedGameManager = UnityEngine.Object.FindAnyObjectByType<GameManager>();
+        if (cachedGameManager == null)
+        {
+            Debug.LogError("[RoundManager] GameManager not found in scene!");
+        }
+    }
 
     public void StartFirstRound()
     {
@@ -33,11 +46,10 @@ public class RoundManager : MonoBehaviour
         if (currentRoundIndex < roundPrefabs.Count)
         {
             SpawnRound(currentRoundIndex);
-            var gameManager = UnityEngine.Object.FindAnyObjectByType<GameManager>();
-            if (gameManager != null)
+            if (cachedGameManager != null)
             {
                 Vector3 spawnPos = GetCurrentPlayerSpawnPosition();
-                gameManager.RespawnPlayer(spawnPos);
+                cachedGameManager.RespawnPlayer(spawnPos);
             }
             OnRoundAdvanced?.Invoke(currentRoundIndex, roundPrefabs.Count);
         }
@@ -49,29 +61,31 @@ public class RoundManager : MonoBehaviour
 
     public void OnCurrentRoundCleared()
     {
-        var gameManager = UnityEngine.Object.FindAnyObjectByType<GameManager>();
-        if (gameManager != null)
+        if (cachedGameManager == null)
         {
-            gameManager.StopPlayerMovement();
+            Debug.LogError("[RoundManager] Cannot clear round - GameManager is null!");
+            return;
+        }
 
-            // Disable one-hit kill for next round
-            if (gameManager.PlayerInstance != null)
-            {
-                var billiardController = gameManager.PlayerInstance.GetComponent<BilliardController>();
-                if (billiardController != null)
-                {
-                    billiardController.DisableOneHitKill();
-                }
-            }
+        cachedGameManager.StopPlayerMovement();
 
-            if (currentRoundIndex == 3)
+        // Disable one-hit kill for next round
+        if (cachedGameManager.PlayerInstance != null)
+        {
+            var billiardController = cachedGameManager.PlayerInstance.GetComponent<BilliardController>();
+            if (billiardController != null)
             {
-                gameManager.WinGame();
-                return;
+                billiardController.DisableOneHitKill();
             }
         }
 
-        gameManager.Shots = 10;
+        if (currentRoundIndex == 3)
+        {
+            cachedGameManager.WinGame();
+            return;
+        }
+
+        cachedGameManager.Shots = 10;
         NextRound();
     }
 
@@ -93,6 +107,7 @@ public class RoundManager : MonoBehaviour
             currentRoundInstance = null;
         }
     }
+    
     public bool IsLastRound => currentRoundIndex == roundPrefabs.Count - 1;
 
     // Returns current spawn location for the round
@@ -105,44 +120,22 @@ public class RoundManager : MonoBehaviour
 
     public bool AreAllEnemiesCleared()
     {
-        if (currentRoundInstance == null) return false;
+        if (currentRoundInstance == null) 
+        {
+            Debug.LogWarning("[RoundManager] AreAllEnemiesCleared: currentRoundInstance is null");
+            return false;
+        }
 
         // find all enemies in game scene for the round
         var allEnemies = GameObject.FindGameObjectsWithTag("Enemy");
         int count = 0;
         foreach(var enemy in allEnemies)
         {
-            if (enemy.transform.IsChildOf(currentRoundInstance.transform))
+            if (enemy != null && enemy.transform.IsChildOf(currentRoundInstance.transform))
                 count++;
         }
-        //Debug.Log($"[RoundManager] Enemies found in current round: {count}");
+        
+        Debug.Log($"[RoundManager] Round {currentRoundIndex}: {count} enemies remaining");
         return count == 0;
     }
-
-    //public void SkipRound()
-    //{
-    //    if (currentRoundInstance == null)
-    //    {
-    //        Debug.LogWarning("[RoundManager] SkipRound called but no current round instance.");
-    //        return;
-    //    }
-
-    //    var allEnemies = GameObject.FindGameObjectsWithTag("Enemy");
-    //    int destroyed = 0;
-    //    foreach (var enemy in allEnemies)
-    //    {
-    //        if (enemy != null && enemy.transform.IsChildOf(currentRoundInstance.transform))
-    //        {
-    //            Destroy(enemy);
-    //            destroyed++;
-    //        }
-    //    }
-
-    //    Debug.Log($"[RoundManager] SkipRound destroyed {destroyed} enemies in round {currentRoundIndex}.");
-
-    //    // Immediately advance the round (preserves existing OnCurrentRoundCleared behavior)
-    //    OnCurrentRoundCleared();
-    //}
-
-
 }

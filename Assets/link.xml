@@ -1,0 +1,6 @@
+<linker>
+  <assembly fullname="UnityEngine">
+    <type fullname="UnityEngine.GameObject" preserve="all"/>
+  </assembly>
+  <assembly fullname="Assembly-CSharp" preserve="all"/>
+</linker>

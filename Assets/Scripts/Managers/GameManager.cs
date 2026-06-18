@@ -42,7 +42,7 @@ public class GameManager : Singleton<GameManager>
         {
             if (_lives != value)
             {
-                _lives = Mathf.Clamp(value, 0, 7);
+                _lives = Mathf.Clamp(value, 0, MaxLives);
                 OnLivesChanged?.Invoke(_lives);
                 if (_lives <= 0)
                 {
@@ -80,6 +80,8 @@ public class GameManager : Singleton<GameManager>
     #endregion
     private new void Awake()
     {
+        base.Awake();
+        
         // Subscribe to scene loading to spawn player que ball
         SceneManager.sceneLoaded += OnSceneLoaded;
 
@@ -94,6 +96,7 @@ public class GameManager : Singleton<GameManager>
     private void HandleRoundAdvanced(int currentRound, int totalRounds)
     {
         Rounds = currentRound + 1;
+
     }
 
     private void HandleAllRoundsCleared()
@@ -112,10 +115,19 @@ public class GameManager : Singleton<GameManager>
     {
         if (scene.buildIndex == 1 || scene.name.Contains("Game"))
         {
+            // Reset rounds counter when loading game scene
+            _rounds = 0;
+            
             // 1. Start the first round (instantiate table/enemies)
             var roundManager = UnityEngine.Object.FindAnyObjectByType<RoundManager>();
             if (roundManager != null)
             {
+                // Re-subscribe in case roundManager is new
+                roundManager.OnRoundAdvanced -= HandleRoundAdvanced;
+                roundManager.OnAllRoundsCleared -= HandleAllRoundsCleared;
+                roundManager.OnRoundAdvanced += HandleRoundAdvanced;
+                roundManager.OnAllRoundsCleared += HandleAllRoundsCleared;
+                
                 roundManager.StartFirstRound();
             }
 
@@ -179,16 +191,30 @@ public class GameManager : Singleton<GameManager>
     {
         HandleMobileBackButton();
 
-        // Debug: Destroy all enemies with "K"
-        //if (Input.GetKeyDown(KeyCode.K))
-        //{
-        //    DestroyAllEnemiesInScene();
-        //}
-
         if (!winCheck && (SceneManager.GetActiveScene().buildIndex == 1 || SceneManager.GetActiveScene().name.Contains("Game")))
         {
             CheckForWin();
         }
+    }
+
+    // Checks whether all enemies in the current level are cleared.
+    private void CheckForWin()
+    {
+        var roundManager = UnityEngine.Object.FindAnyObjectByType<RoundManager>();
+        if (roundManager == null)
+        {
+            Debug.LogWarning("[GameManager] CheckForWin: RoundManager not found in scene!");
+            return;
+        }
+
+        bool allCleared = roundManager.AreAllEnemiesCleared();
+        
+        if (!allCleared)
+            return;
+
+        Debug.Log("[GameManager] All enemies cleared, advancing round");
+        // Notify RoundManager to advance
+        roundManager.OnCurrentRoundCleared();
     }
 
     private void HandleMobileBackButton()
@@ -310,17 +336,22 @@ public class GameManager : Singleton<GameManager>
         }
     }
     // Checks whether all enemies in the current level are cleared.
-    private void CheckForWin()
-    {
-        var roundManager = UnityEngine.Object.FindAnyObjectByType<RoundManager>();
-        if (roundManager == null) return;
+    //private void CheckForWin()
+    //{
+    //    var roundManager = UnityEngine.Object.FindAnyObjectByType<RoundManager>();
+    //    if (roundManager == null)
+    //    {
+    //        // Don't spam logs, only log once
+    //        return;
+    //    }
 
-        if (!roundManager.AreAllEnemiesCleared())
-            return;
+    //    if (!roundManager.AreAllEnemiesCleared())
+    //        return;
 
-        // Notify RoundManager to advance
-        roundManager.OnCurrentRoundCleared();
-    }
+    //    Debug.Log("[GameManager] CheckForWin: All enemies cleared, calling OnCurrentRoundCleared");
+    //    // Notify RoundManager to advance
+    //    roundManager.OnCurrentRoundCleared();
+    //}
 
 
     public void SetLoadFromCheckpoint(bool value)

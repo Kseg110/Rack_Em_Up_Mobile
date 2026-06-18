@@ -368,11 +368,19 @@ public class BilliardController : PhysicsMaterialManager
     public void EnableOneHitKill()
     {
         oneHitKillActive = true;
+        if (billiardBall != null)
+        {
+            billiardBall.oneHitKillActive = true;
+        }
     }
 
     public void DisableOneHitKill()
     {
         oneHitKillActive = false;
+        if (billiardBall != null)
+        {
+            billiardBall.oneHitKillActive = false;
+        }
     }
 
     public bool HasOneHitKill()

@@ -1,4 +1,3 @@
-using Mono.Cecil;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -80,8 +79,8 @@ public class UpgradePanel : MonoBehaviour
         var gameManager = GameManager.Instance;
         if (gameManager != null)
         {
-            gameManager.Lives += 1;
             gameManager.MaxLives += 1;
+            gameManager.Lives += 1;
             lifeUpgradeUsed = true;
         }
         HideUpgradePanel();
@@ -107,14 +106,15 @@ public class UpgradePanel : MonoBehaviour
         var playerInstance = GameManager.Instance?.PlayerInstance;
         if (playerInstance != null)
         {
-            var BilliardController = playerInstance.GetComponent<BilliardController>();
-            if (BilliardController != null)
-            {
-                BilliardController.EnableOneHitKill();
-                oneHitKillUsed = true;
-            }
+            
+            playerInstance.EnableOneHitKill();
+            oneHitKillUsed = true; 
         }
-        HideUpgradePanel();
+        else
+        {
+            Debug.LogWarning("Player instance not found trying to enable one-hit kill.");
+        }
+            HideUpgradePanel();
     }
 
     public void ResetUpgrades()

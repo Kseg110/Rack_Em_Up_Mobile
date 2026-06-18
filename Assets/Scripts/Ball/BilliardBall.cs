@@ -306,6 +306,7 @@ public class BilliardBall : MonoBehaviour
         {
             PlayCollisionSound(currentVelocity.magnitude / collisionSpeedScale);
             Destroy(enemy.gameObject);
+            oneHitKillActive = false;
             return;
         }
         // play sound based on speed
