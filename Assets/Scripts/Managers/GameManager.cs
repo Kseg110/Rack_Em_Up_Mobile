@@ -101,14 +101,9 @@ public class GameManager : Singleton<GameManager>
 
     private void HandleAllRoundsCleared()
     {
-        if (Lives > 0 && Shots > 0)
-        {
-            EndGame(true);
-        }
-        else
-        {
-            EndGame(false);
-        }
+        // This is a backup - shouldn't normally be called if OnCurrentRoundCleared handles it
+        Debug.Log("[GameManager] HandleAllRoundsCleared called");
+        WinGame();
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -190,32 +185,33 @@ public class GameManager : Singleton<GameManager>
     void Update()
     {
         HandleMobileBackButton();
+       
 
-        if (!winCheck && (SceneManager.GetActiveScene().buildIndex == 1 || SceneManager.GetActiveScene().name.Contains("Game")))
-        {
-            CheckForWin();
-        }
+        //if (!winCheck && (SceneManager.GetActiveScene().buildIndex == 1 || SceneManager.GetActiveScene().name.Contains("Game")))
+        //{
+        //    CheckForWin();
+        //}
     }
 
     // Checks whether all enemies in the current level are cleared.
-    private void CheckForWin()
-    {
-        var roundManager = UnityEngine.Object.FindAnyObjectByType<RoundManager>();
-        if (roundManager == null)
-        {
-            Debug.LogWarning("[GameManager] CheckForWin: RoundManager not found in scene!");
-            return;
-        }
+    //private void CheckForWin()
+    //{
+    //    var roundManager = UnityEngine.Object.FindAnyObjectByType<RoundManager>();
+    //    if (roundManager == null)
+    //    {
+    //        Debug.LogWarning("[GameManager] CheckForWin: RoundManager not found in scene!");
+    //        return;
+    //    }
 
-        bool allCleared = roundManager.AreAllEnemiesCleared();
+    //    bool allCleared = roundManager.AreAllEnemiesCleared();
         
-        if (!allCleared)
-            return;
+    //    if (!allCleared)
+    //        return;
 
-        Debug.Log("[GameManager] All enemies cleared, advancing round");
-        // Notify RoundManager to advance
-        roundManager.OnCurrentRoundCleared();
-    }
+    //    Debug.Log("[GameManager] All enemies cleared, advancing round");
+    //    // Notify RoundManager to advance
+    //    roundManager.OnCurrentRoundCleared();
+    //}
 
     private void HandleMobileBackButton()
     {
@@ -338,7 +334,7 @@ public class GameManager : Singleton<GameManager>
     // Checks whether all enemies in the current level are cleared.
     //private void CheckForWin()
     //{
-    //    var roundManager = UnityEngine.Object.FindAnyObjectByType<RoundManager>();
+    //    var roundManager = UnityEngine.Object.FindAnyObjectOfType<RoundManager>();
     //    if (roundManager == null)
     //    {
     //        // Don't spam logs, only log once

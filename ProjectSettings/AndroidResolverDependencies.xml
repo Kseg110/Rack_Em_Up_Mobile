@@ -9,7 +9,7 @@
   <files />
   <settings>
     <setting name="androidAbis" value="arm64-v8a,x86_64" />
-    <setting name="bundleId" value="com.Kseg110.RackEmUp_v3" />
+    <setting name="bundleId" value="com.Kseg110.RackEmUp_v5" />
     <setting name="explodeAars" value="True" />
     <setting name="gradleBuildEnabled" value="True" />
     <setting name="gradlePropertiesTemplateEnabled" value="True" />

@@ -918,6 +918,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5105421283448669223}
+  - component: {fileID: 6839766432964491296}
   m_Layer: 0
   m_Name: Lvl3Table
   m_TagString: Untagged
@@ -950,6 +951,18 @@ Transform:
   - {fileID: 2856043892841787248}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6839766432964491296
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6233571483257229236}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e382f08efa88a774fb05fbea3f32d096, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RoundEnemyTracker
 --- !u!1 &7517460662218165266
 GameObject:
   m_ObjectHideFlags: 0
@@ -1648,13 +1661,33 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5069038783657100744, guid: 3401a94413842e34180a98baaaab0827, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7497758684798577526}
   m_SourcePrefab: {fileID: 100100000, guid: 3401a94413842e34180a98baaaab0827, type: 3}
 --- !u!4 &1081159090964075312 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2995218129858597386, guid: 3401a94413842e34180a98baaaab0827, type: 3}
   m_PrefabInstance: {fileID: 2778768738807251258}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &6974101755719992562 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5069038783657100744, guid: 3401a94413842e34180a98baaaab0827, type: 3}
+  m_PrefabInstance: {fileID: 2778768738807251258}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7497758684798577526
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6974101755719992562}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4f030b802167b34eb11b4880f20ad84, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyRegistration
 --- !u!1001 &5230313553139252374
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1714,8 +1747,28 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5069038783657100744, guid: 3401a94413842e34180a98baaaab0827, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2401358713451503428}
   m_SourcePrefab: {fileID: 100100000, guid: 3401a94413842e34180a98baaaab0827, type: 3}
+--- !u!1 &1066536851579992414 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5069038783657100744, guid: 3401a94413842e34180a98baaaab0827, type: 3}
+  m_PrefabInstance: {fileID: 5230313553139252374}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2401358713451503428
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1066536851579992414}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4f030b802167b34eb11b4880f20ad84, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyRegistration
 --- !u!4 &6990969197854371484 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2995218129858597386, guid: 3401a94413842e34180a98baaaab0827, type: 3}
@@ -1780,8 +1833,28 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5069038783657100744, guid: 3401a94413842e34180a98baaaab0827, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 678784831951070662}
   m_SourcePrefab: {fileID: 100100000, guid: 3401a94413842e34180a98baaaab0827, type: 3}
+--- !u!1 &1188410387530245801 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5069038783657100744, guid: 3401a94413842e34180a98baaaab0827, type: 3}
+  m_PrefabInstance: {fileID: 6207863651749110625}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &678784831951070662
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1188410387530245801}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4f030b802167b34eb11b4880f20ad84, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyRegistration
 --- !u!4 &9203075175948005739 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2995218129858597386, guid: 3401a94413842e34180a98baaaab0827, type: 3}
@@ -1846,10 +1919,30 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1149642406717326654, guid: 0df29de8e014f064d8df3eb34aeb1859, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6774406751762266847}
   m_SourcePrefab: {fileID: 100100000, guid: 0df29de8e014f064d8df3eb34aeb1859, type: 3}
 --- !u!4 &4434205527514094529 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6934885103170212604, guid: 0df29de8e014f064d8df3eb34aeb1859, type: 3}
   m_PrefabInstance: {fileID: 6752267126441429309}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &5926884996803087363 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1149642406717326654, guid: 0df29de8e014f064d8df3eb34aeb1859, type: 3}
+  m_PrefabInstance: {fileID: 6752267126441429309}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6774406751762266847
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5926884996803087363}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4f030b802167b34eb11b4880f20ad84, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyRegistration

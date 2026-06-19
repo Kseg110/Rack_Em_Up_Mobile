@@ -213,6 +213,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8404952115959266470}
+  - component: {fileID: 7673376339198221657}
   m_Layer: 0
   m_Name: Lvl1Table
   m_TagString: Untagged
@@ -244,6 +245,18 @@ Transform:
   - {fileID: 7111808231391236138}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7673376339198221657
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2162914483927217455}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e382f08efa88a774fb05fbea3f32d096, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RoundEnemyTracker
 --- !u!1 &2643926741332285250
 GameObject:
   m_ObjectHideFlags: 0
@@ -1533,13 +1546,33 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5069038783657100744, guid: 3401a94413842e34180a98baaaab0827, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 984054514070930683}
   m_SourcePrefab: {fileID: 100100000, guid: 3401a94413842e34180a98baaaab0827, type: 3}
 --- !u!4 &2497941212710650256 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2995218129858597386, guid: 3401a94413842e34180a98baaaab0827, type: 3}
   m_PrefabInstance: {fileID: 809345326562759578}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &5576451001149953618 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5069038783657100744, guid: 3401a94413842e34180a98baaaab0827, type: 3}
+  m_PrefabInstance: {fileID: 809345326562759578}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &984054514070930683
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5576451001149953618}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4f030b802167b34eb11b4880f20ad84, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyRegistration
 --- !u!1001 &8799961661635230398
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1599,8 +1632,28 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5069038783657100744, guid: 3401a94413842e34180a98baaaab0827, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8339161515377063748}
   m_SourcePrefab: {fileID: 100100000, guid: 3401a94413842e34180a98baaaab0827, type: 3}
+--- !u!1 &4343556275957514102 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5069038783657100744, guid: 3401a94413842e34180a98baaaab0827, type: 3}
+  m_PrefabInstance: {fileID: 8799961661635230398}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8339161515377063748
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4343556275957514102}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4f030b802167b34eb11b4880f20ad84, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyRegistration
 --- !u!4 &6020918547308013748 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2995218129858597386, guid: 3401a94413842e34180a98baaaab0827, type: 3}
@@ -1665,8 +1718,28 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5069038783657100744, guid: 3401a94413842e34180a98baaaab0827, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3235110109861218564}
   m_SourcePrefab: {fileID: 100100000, guid: 3401a94413842e34180a98baaaab0827, type: 3}
+--- !u!1 &4449512866786592300 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5069038783657100744, guid: 3401a94413842e34180a98baaaab0827, type: 3}
+  m_PrefabInstance: {fileID: 8928121871880618980}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &3235110109861218564
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4449512866786592300}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4f030b802167b34eb11b4880f20ad84, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyRegistration
 --- !u!4 &5941981353072333294 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2995218129858597386, guid: 3401a94413842e34180a98baaaab0827, type: 3}

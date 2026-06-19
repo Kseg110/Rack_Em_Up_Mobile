@@ -36,7 +36,6 @@ public abstract class EnemyBallBase : MonoBehaviour
 
         rb.mass = mass;
 
-        // Make kinematic so we control movement manually, same as BilliardBall
         rb.isKinematic = true;
         rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
 
@@ -107,8 +106,6 @@ public abstract class EnemyBallBase : MonoBehaviour
         }
     }
 
-    // --- Movement & Collision ---
-
     private void MoveWithCollision()
     {
         Vector3 moveStep     = currentVelocity * Time.fixedDeltaTime;
@@ -138,7 +135,6 @@ public abstract class EnemyBallBase : MonoBehaviour
 
         if (playerBall != null)
         {
-            // Let the player ball's resolver handle this; just reflect
             currentVelocity = Vector3.Reflect(currentVelocity, hitInfo.normal) * restitution;
         }
         else if (otherEnemy != null)
@@ -184,8 +180,6 @@ public abstract class EnemyBallBase : MonoBehaviour
             currentVelocity = Vector3.zero;
     }
 
-    // --- Curve coroutine ---
-
     private IEnumerator ApplySimpleCurveCoroutine(Vector3 lateralDir, float intensity)
     {
         float elapsed = 0f;
@@ -208,6 +202,14 @@ public abstract class EnemyBallBase : MonoBehaviour
         if (!gameObject.CompareTag(enemyTag)) return;
 
         if (other.GetComponent<Pockets>() != null || other.CompareTag("Pocket"))
+        {
+            RoundEnemyTracker tracker = GetComponentInParent<RoundEnemyTracker>();
+            if (tracker != null)
+            {
+                tracker.EnemyDefeated();
+            }
+
             Destroy(gameObject);
+        }
     }
 }
