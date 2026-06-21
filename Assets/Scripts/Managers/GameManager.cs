@@ -18,13 +18,7 @@ public class GameManager : Singleton<GameManager>
     public BilliardController PlayerInstance => _playerInstance;
     #endregion
 
-    [Header("Win / Enemy Parents (ordered by level)")]
-    [Tooltip("Assign Enemy Parents; Each parent is activated when the previous level is cleared.")]
-    public List<Transform> enemyLevelParents = new List<Transform>();
-    [Tooltip("Fallback names to search for if enemyLevelParents list is empty (e.g. 'Lvl1Enemies', 'Lvl2Enemies').")]
-    public List<string> enemyLevelParentNames = new List<string> { "Lvl1Enemies", "Lvl2Enemies" };
-
-    private int _currentLevelIndex = 0;
+    //private int _currentLevelIndex = 0;
 
     #region UI Events
     // Add events for UI
@@ -35,8 +29,9 @@ public class GameManager : Singleton<GameManager>
 
     // Backing fields
     private int _lives = 7;
-    private int _shots = 10;
+    public int _shots = 10;
     private int _rounds = 0;
+
     public int MaxLives { get; set; } = 7;
     private bool winCheck = false;
 
@@ -47,7 +42,7 @@ public class GameManager : Singleton<GameManager>
         {
             if (_lives != value)
             {
-                _lives = Mathf.Clamp(value, 0, 7);
+                _lives = Mathf.Clamp(value, 0, MaxLives);
                 OnLivesChanged?.Invoke(_lives);
                 if (_lives <= 0)
                 {
@@ -85,6 +80,8 @@ public class GameManager : Singleton<GameManager>
     #endregion
     private new void Awake()
     {
+        base.Awake();
+        
         // Subscribe to scene loading to spawn player que ball
         SceneManager.sceneLoaded += OnSceneLoaded;
 
@@ -99,71 +96,45 @@ public class GameManager : Singleton<GameManager>
     private void HandleRoundAdvanced(int currentRound, int totalRounds)
     {
         Rounds = currentRound + 1;
+
     }
 
     private void HandleAllRoundsCleared()
     {
-        if (Lives > 0 && Shots > 0)
-        {
-            EndGame(true);
-        }
-        else
-        {
-            EndGame(false);
-        }
+        // This is a backup - shouldn't normally be called if OnCurrentRoundCleared handles it
+        Debug.Log("[GameManager] HandleAllRoundsCleared called");
+        WinGame();
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         if (scene.buildIndex == 1 || scene.name.Contains("Game"))
         {
+            // Reset rounds counter when loading game scene
+            _rounds = 0;
+            
+            // 1. Start the first round (instantiate table/enemies)
+            var roundManager = UnityEngine.Object.FindAnyObjectByType<RoundManager>();
+            if (roundManager != null)
+            {
+                // Re-subscribe in case roundManager is new
+                roundManager.OnRoundAdvanced -= HandleRoundAdvanced;
+                roundManager.OnAllRoundsCleared -= HandleAllRoundsCleared;
+                roundManager.OnRoundAdvanced += HandleRoundAdvanced;
+                roundManager.OnAllRoundsCleared += HandleAllRoundsCleared;
+                
+                roundManager.StartFirstRound();
+            }
+
             SpawnPlayer();
-
-            // Resolve enemy level parents if not assigned in the inspector
-            ResolveLevelParents();
-
-            // Start from the first level
-            _currentLevelIndex = 0;
-            ActivateCurrentLevel();
-
-            // Reset win flag for a new playthrough
             winCheck = false;
 
-            // Ask GameCanvasManager to hide the end scene UI if present
             var canvasMgr = UnityEngine.Object.FindAnyObjectByType<GameCanvasManager>();
             if (canvasMgr != null)
                 canvasMgr.HideEndScene();
         }
     }
 
-    // Attempts to populate enemyLevelParents from enemyLevelParentNames if the list is empty.
-    private void ResolveLevelParents()
-    {
-        if (enemyLevelParents == null)
-            enemyLevelParents = new List<Transform>();
-
-        // Only auto-resolve if nothing was assigned in the inspector
-        if (enemyLevelParents.Count == 0 && enemyLevelParentNames != null)
-        {
-            foreach (var parentName in enemyLevelParentNames)
-            {
-                if (string.IsNullOrEmpty(parentName)) continue;
-                var found = GameObject.Find(parentName);
-                if (found != null)
-                    enemyLevelParents.Add(found.transform);
-            }
-        }
-    }
-
-    // Deactivates all level parents then activates only the current one.
-    private void ActivateCurrentLevel()
-    {
-        for (int i = 0; i < enemyLevelParents.Count; i++)
-        {
-            if (enemyLevelParents[i] != null)
-                enemyLevelParents[i].gameObject.SetActive(i == _currentLevelIndex);
-        }
-    }
 
     private void OnEnable()
     {
@@ -200,20 +171,47 @@ public class GameManager : Singleton<GameManager>
 
     #endregion
 
+    //public void DestroyAllEnemiesInScene()
+    //{
+    //    var allEnemies = GameObject.FindGameObjectsWithTag("Enemy");
+    //    foreach (var enemy in allEnemies)
+    //    {
+    //        Destroy(enemy);
+    //    }
+    //}
+
     private bool isPaused = false;
 
     void Update()
     {
-        // Keep only essential Update logic
-        // For mobile, you might want to handle back button presses instead of Escape
         HandleMobileBackButton();
+       
 
-        // Only perform win checks while in the actual game scene and if win not already detected
-        if (!winCheck && (SceneManager.GetActiveScene().buildIndex == 1 || SceneManager.GetActiveScene().name.Contains("Game")))
-        {
-            CheckForWin();
-        }
+        //if (!winCheck && (SceneManager.GetActiveScene().buildIndex == 1 || SceneManager.GetActiveScene().name.Contains("Game")))
+        //{
+        //    CheckForWin();
+        //}
     }
+
+    // Checks whether all enemies in the current level are cleared.
+    //private void CheckForWin()
+    //{
+    //    var roundManager = UnityEngine.Object.FindAnyObjectByType<RoundManager>();
+    //    if (roundManager == null)
+    //    {
+    //        Debug.LogWarning("[GameManager] CheckForWin: RoundManager not found in scene!");
+    //        return;
+    //    }
+
+    //    bool allCleared = roundManager.AreAllEnemiesCleared();
+        
+    //    if (!allCleared)
+    //        return;
+
+    //    Debug.Log("[GameManager] All enemies cleared, advancing round");
+    //    // Notify RoundManager to advance
+    //    roundManager.OnCurrentRoundCleared();
+    //}
 
     private void HandleMobileBackButton()
     {
@@ -304,42 +302,52 @@ public class GameManager : Singleton<GameManager>
         if (_playerInstance != null)
         {
             _playerInstance.transform.position = position;
-
-            // Reset rigidbody (belt-and-suspenders for any non-kinematic forces)
-            Rigidbody rb = _playerInstance.GetComponent<Rigidbody>();
-            if (rb != null)
-            {
-                rb.linearVelocity = Vector3.zero;
-                rb.angularVelocity = Vector3.zero;
-            }
-
-            // Reset kinematic ball state (custom physics  this is the true velocity store)
-            BilliardBall ball = _playerInstance.GetComponent<BilliardBall>();
-            if (ball != null)
-            {
-                ball.ResetState();
-            }
+            StopPlayerMovement();
         }
         else
         {
             SpawnPlayer();
         }
     }
-
-    // Checks whether all enemies in the current level are cleared.
-    // If so, advances to the next level or triggers the win if it was the last.
-    private void CheckForWin()
+    public void StopPlayerMovement()
     {
-        var roundManager = UnityEngine.Object.FindAnyObjectByType<RoundManager>();
-        if (roundManager == null) return;
+        if (_playerInstance != null)
+        {
+            Rigidbody rb = _playerInstance.GetComponent<Rigidbody>();
+            if (rb != null)
+            {
+                if (!rb.isKinematic)
+                {
+                    rb.linearVelocity = Vector3.zero;
+                    rb.angularVelocity = Vector3.zero;
+                    rb.Sleep();
+                }
+            }
 
-        // Check if all enemies in the current round are cleared
-        Transform currentParent = enemyLevelParents[_currentLevelIndex];
-        if (currentParent == null || currentParent.childCount > 0) return;
-
-        // Notify RoundManager to advance
-        roundManager.OnCurrentRoundCleared();
+            BilliardBall ball = _playerInstance.GetComponent<BilliardBall>();
+            if (ball != null)
+            {
+                ball.ResetState();
+            }
+        }
     }
+    // Checks whether all enemies in the current level are cleared.
+    //private void CheckForWin()
+    //{
+    //    var roundManager = UnityEngine.Object.FindAnyObjectOfType<RoundManager>();
+    //    if (roundManager == null)
+    //    {
+    //        // Don't spam logs, only log once
+    //        return;
+    //    }
+
+    //    if (!roundManager.AreAllEnemiesCleared())
+    //        return;
+
+    //    Debug.Log("[GameManager] CheckForWin: All enemies cleared, calling OnCurrentRoundCleared");
+    //    // Notify RoundManager to advance
+    //    roundManager.OnCurrentRoundCleared();
+    //}
 
 
     public void SetLoadFromCheckpoint(bool value)
@@ -351,8 +359,7 @@ public class GameManager : Singleton<GameManager>
     public void WinGame()
     {
         winCheck = true;
-        SceneManager.sceneLoaded += OnMenuSceneLoaded;
-        SceneManager.LoadScene("Menu");
+        EndGame(true);
     }
 
     private void OnMenuSceneLoaded(Scene scene, LoadSceneMode mode)

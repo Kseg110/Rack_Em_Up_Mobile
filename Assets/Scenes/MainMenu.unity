@@ -344,10 +344,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   playerPrefab: {fileID: 2903419006329229142, guid: b4a8fa5b6602d4b4faf8a815fc594195, type: 3}
-  enemyLevelParents: []
-  enemyLevelParentNames:
-  - Lvl1Enemies
-  - Lvl2Enemies
+  _shots: 10
   spawnPoint: {fileID: 0}
 --- !u!4 &1362258860
 Transform:
@@ -994,6 +991,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Menu
       objectReference: {fileID: 0}
+    - target: {fileID: 6873578727376851334, guid: 99b3b6ccef89319458d9c71ed9811810, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1052,6 +1053,10 @@ PrefabInstance:
       propertyPath: m_AnchorMin.x
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2442648121271662224, guid: 3ae75920d451c4548a27882cdf60cdb4, type: 3}
+      propertyPath: m_Color.a
+      value: 0.65882355
+      objectReference: {fileID: 0}
     - target: {fileID: 2553126678627496594, guid: 3ae75920d451c4548a27882cdf60cdb4, type: 3}
       propertyPath: m_AnchorMax.x
       value: 1
@@ -1063,6 +1068,22 @@ PrefabInstance:
     - target: {fileID: 2553126678627496594, guid: 3ae75920d451c4548a27882cdf60cdb4, type: 3}
       propertyPath: m_AnchorMin.x
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2649777894573250637, guid: 3ae75920d451c4548a27882cdf60cdb4, type: 3}
+      propertyPath: m_fontColor.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2649777894573250637, guid: 3ae75920d451c4548a27882cdf60cdb4, type: 3}
+      propertyPath: m_fontColor.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2649777894573250637, guid: 3ae75920d451c4548a27882cdf60cdb4, type: 3}
+      propertyPath: m_fontColor.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2649777894573250637, guid: 3ae75920d451c4548a27882cdf60cdb4, type: 3}
+      propertyPath: m_fontColor32.rgba
+      value: 4294967295
       objectReference: {fileID: 0}
     - target: {fileID: 4283859644152782356, guid: 3ae75920d451c4548a27882cdf60cdb4, type: 3}
       propertyPath: m_Name

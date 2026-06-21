@@ -11,7 +11,7 @@ public class Projection : PhysicsMaterialManager
 {
     #region Inspector Fields
 
-    [SerializeField] private Transform _obstaclesParent;
+    //[SerializeField] private Transform _obstaclesParent;
     [SerializeField] private LineRenderer _line;
     [SerializeField] private int _maxPhysicsFrameIterations;
     [SerializeField] private LineRenderer _curvePreviewLine;
@@ -48,39 +48,10 @@ public class Projection : PhysicsMaterialManager
 
     private void CreatePhysicsScene()
     {
-        string simulationSceneName = "Simulation";
-        Scene existing = SceneManager.GetSceneByName(simulationSceneName);
-        if (existing.IsValid())
-        {
-            SceneManager.UnloadSceneAsync(existing);
-            // Wait for unload to complete before creating again, or use a coroutine
-        }
-        else
-        {
-            SceneManager.CreateScene(simulationSceneName);
-        }
-
-        _simulationScene = SceneManager.GetSceneByName(simulationSceneName);
+        if (_simulationScene != null) return;
+        _simulationScene = SceneManager.CreateScene("Simulation", new CreateSceneParameters(LocalPhysicsMode.Physics3D));
         _physicsScene    = _simulationScene.GetPhysicsScene();
 
-        if (_obstaclesParent == null)
-        {
-            Debug.LogWarning("[Projection] _obstaclesParent not assigned — no obstacle ghosts created.");
-            return;
-        }
-
-        foreach (Transform obj in _obstaclesParent)
-        {
-            var ghost = Instantiate(obj.gameObject, obj.position, obj.rotation);
-
-            var ghostRenderer = ghost.GetComponent<Renderer>();
-            if (ghostRenderer != null) ghostRenderer.enabled = false;
-
-            var wallCollider = ghost.GetComponent<Collider>();
-            if (wallCollider != null) wallCollider.material = GetWallMaterial();
-
-            SceneManager.MoveGameObjectToScene(ghost, _simulationScene);
-        }
     }
 
     private void SetupCurvePreviewLine()
@@ -113,7 +84,7 @@ public class Projection : PhysicsMaterialManager
         }
 
         // Fallback: create a new LineRenderer if not found
-        Debug.LogWarning("[Projection] _line not assigned and not found on PlayerCueBall — creating fallback LineRenderer.");
+        Debug.LogWarning("[Projection] _line not assigned and not found on PlayerCueBall â€” creating fallback LineRenderer.");
         var obj = new GameObject("TrajectoryLine");
         _line             = obj.AddComponent<LineRenderer>();
         _line.material    = new Material(Shader.Find("Sprites/Default"));
@@ -130,7 +101,7 @@ public class Projection : PhysicsMaterialManager
 
         _billiardBall = FindFirstObjectByType<BilliardBall>();
         if (_billiardBall == null)
-            Debug.LogWarning("[Projection] BilliardBall not found — curve preview uses default physics values.");
+            Debug.LogWarning("[Projection] BilliardBall not found â€” curve preview uses default physics values.");
         else
             Debug.Log($"[Projection] Auto-found BilliardBall '{_billiardBall.name}'. CurveStrength={_billiardBall.curveStrength}");
     }
@@ -219,7 +190,7 @@ public class Projection : PhysicsMaterialManager
 
     /// <summary>
     /// Returns world-space points by step-simulating the same Magnus force, damping,
-    /// and spin-decay math as BilliardBall.FixedUpdate. Pass the raw force vector —
+    /// and spin-decay math as BilliardBall.FixedUpdate. Pass the raw force vector â€”
     /// it is divided by mass internally, matching BilliardBall.ApplyForce.
     /// </summary>
     public Vector3[] GetSpinCurvePoints(Vector3 startPos, Vector3 velocity, Vector2 spin, int pointCount)

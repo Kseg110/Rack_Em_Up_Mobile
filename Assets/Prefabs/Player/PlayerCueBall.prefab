@@ -169,7 +169,7 @@ LineRenderer:
   m_SmallMeshCulling: 1
   m_ForceMeshLod: -1
   m_MeshLodSelectionBias: 0
-  m_RenderingLayerMask: 1
+  m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 10306, guid: 0000000000000000f000000000000000, type: 0}
@@ -191,8 +191,8 @@ LineRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: -2022627439
-  m_SortingLayer: 1
+  m_SortingLayerID: -406897887
+  m_SortingLayer: 4
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Positions:
@@ -271,7 +271,7 @@ MonoBehaviour:
   ballPhysicsMaterial: {fileID: 0}
   wallPhysicsMaterial: {fileID: 0}
   maxPower: 50
-  chargeSpeed: 15
+  chargeSpeed: 20
   billiardBall: {fileID: 1617351716242497224}
   aimingSystem:
     groundLayer:
@@ -295,6 +295,25 @@ MonoBehaviour:
   powerBar: {fileID: 8910901106363009479}
   shootButton: {fileID: 0}
   spinButton: {fileID: 0}
+--- !u!114 &4264112315531624967
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 690765546428489236}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6655a9c68f702a4180ecc05503a07dc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Projection
+  ballPhysicsMaterial: {fileID: 0}
+  wallPhysicsMaterial: {fileID: 0}
+  _line: {fileID: 5536545535300245337}
+  _maxPhysicsFrameIterations: 1
+  _curvePreviewLine: {fileID: 0}
+  _billiardBall: {fileID: 0}
+  _curvePreviewSteps: 20
 --- !u!114 &1617351716242497224
 MonoBehaviour:
   m_ObjectHideFlags: 0

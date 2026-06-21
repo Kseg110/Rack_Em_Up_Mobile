@@ -14,6 +14,9 @@ public class GameCanvasManager : MonoBehaviour
     public TMP_Text levelText;
     public TMP_Text coinsText;
 
+    [Header("Debug Display (Remove for Production)")]
+    public TMP_Text debugText;
+
     [Header("Game Buttons")]
     public Button pauseButton;
     public Button shootButton;
@@ -47,8 +50,15 @@ public class GameCanvasManager : MonoBehaviour
         {
             GameManager.Instance.OnLivesChanged += UpdateLives;
             GameManager.Instance.OnShotsChanged += UpdateShots;
-            GameManager.Instance.OnRoundsChanged += UpdateLevel;
+            GameManager.Instance.OnRoundsChanged += UpdateRounds;
             GameManager.Instance.OnGameEnded += ShowEndScene;
+
+            if (isInitialized)
+            {
+                UpdateLives(GameManager.Instance.Lives);
+                UpdateShots(GameManager.Instance.Shots);
+                UpdateShots(GameManager.Instance.Rounds);
+            }
         }
     }
 
@@ -58,7 +68,7 @@ public class GameCanvasManager : MonoBehaviour
         {
             GameManager.Instance.OnLivesChanged -= UpdateLives;
             GameManager.Instance.OnShotsChanged -= UpdateShots;
-            GameManager.Instance.OnRoundsChanged -= UpdateLevel;
+            GameManager.Instance.OnRoundsChanged -= UpdateRounds;
             GameManager.Instance.OnGameEnded -= ShowEndScene;
         }
     }
@@ -161,6 +171,12 @@ public class GameCanvasManager : MonoBehaviour
 
         endScenePanel.SetActive(true);
         Time.timeScale = 0f;
+
+        // Ensure ads overlay/ad is requested when winning.
+        if (isWin && UnityAdsManager.Instance != null)
+        {
+            UnityAdsManager.Instance.RequestShowOnWin();
+        }
     }
 
     public void HideEndScene()
@@ -178,7 +194,7 @@ public class GameCanvasManager : MonoBehaviour
         {
             UpdateLives(GameManager.Instance.Lives);
             UpdateShots(GameManager.Instance.Shots);
-            UpdateLevel(GameManager.Instance.Rounds);
+            UpdateRounds(GameManager.Instance.Rounds);
 
             isInitialized = true;
         }
@@ -271,11 +287,11 @@ public class GameCanvasManager : MonoBehaviour
         }
     }
 
-    private void UpdateLevel(int level)
+    private void UpdateRounds(int rounds)
     {
         if (levelText != null)
         {
-            levelText.text = $"Level: {level}";
+            levelText.text = $"Level: {rounds}";
         }
     }
 
@@ -287,13 +303,21 @@ public class GameCanvasManager : MonoBehaviour
         }
     }
 
+    public void UpdateDebugInfo(string message)
+    {
+        if (debugText != null)
+        {
+            debugText.text = $"{System.DateTime.Now:HH:mm:ss} - {message}";
+        }
+    }
+
     private void OnDestroy()
     {
         if (GameManager.Instance != null)
         {
             GameManager.Instance.OnLivesChanged -= UpdateLives;
             GameManager.Instance.OnShotsChanged -= UpdateShots;
-            GameManager.Instance.OnRoundsChanged -= UpdateLevel;
+            GameManager.Instance.OnRoundsChanged -= UpdateRounds;
             GameManager.Instance.OnGameEnded -= ShowEndScene;
         }
     }

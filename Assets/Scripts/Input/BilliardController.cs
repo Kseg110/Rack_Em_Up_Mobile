@@ -45,6 +45,8 @@ public class BilliardController : PhysicsMaterialManager
     private float currentPower;
     private bool  ballWasMovingLastFrame;
 
+    private bool oneHitKillActive = true;
+
     #endregion
 
     #region Properties
@@ -358,6 +360,33 @@ public class BilliardController : PhysicsMaterialManager
     #region Public Utilities
 
     public Vector3 GetCurrentVelocity() => billiardBall.Velocity;
+
+    #endregion
+
+    #region One Hit Kill Upgrade
+
+    public void EnableOneHitKill()
+    {
+        oneHitKillActive = true;
+        if (billiardBall != null)
+        {
+            billiardBall.oneHitKillActive = true;
+        }
+    }
+
+    public void DisableOneHitKill()
+    {
+        oneHitKillActive = false;
+        if (billiardBall != null)
+        {
+            billiardBall.oneHitKillActive = false;
+        }
+    }
+
+    public bool HasOneHitKill()
+    {
+        return oneHitKillActive;
+    }
 
     #endregion
 }
